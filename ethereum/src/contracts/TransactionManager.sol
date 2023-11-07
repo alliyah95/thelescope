@@ -23,7 +23,7 @@ contract TransactionManager {
     }
 
     function createTransaction(string memory _id, string memory _operation, string memory _performedBy, string memory _timeStamp, string memory _description) public {
-        Transaction storage newTransaction;
+        Transaction memory newTransaction;
         newTransaction.id = _id;
         newTransaction.operation = _operation;
         newTransaction.performedBy = _performedBy;
@@ -34,9 +34,5 @@ contract TransactionManager {
 
     function getTransactionCount() public view returns(uint256){
         return transactions.length;
-    }
-
-    function getAllTransactions() public view returns(Transaction[] memory){
-        return transactions;
     }
 }

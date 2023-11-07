@@ -5,9 +5,11 @@
     "main": "index.js",
     "scripts": {
         "compile:contract": "node src/compile.js",
-        "deploy:contract": "node src/deploy.js"
+        "deploy:contract": "node src/deploy.js",
+        "test:contract": "mocha src/contracts/*.test.js",
+        "set:contract": "node src/compile.js && node src/deploy.js"
     },
-    "author": "",
+    "author": "alliyah95",
     "license": "ISC",
     "dependencies": {
         "@truffle/hdwallet-provider": "^2.1.15",
