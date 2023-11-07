@@ -24,6 +24,7 @@ const deploy = async () => {
             arguments: [clinicName, clinicId],
         })
         .send({ gas: "3000000", from: accounts[0] });
+    console.log(compiledContract.interface);
 
     console.log("Contract deployed to", result.options.address);
     provider.engine.stop();
