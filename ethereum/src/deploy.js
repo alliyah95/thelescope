@@ -23,7 +23,7 @@ const deploy = async () => {
             data: compiledContract.bytecode,
             arguments: [clinicName, clinicId],
         })
-        .send({ gas: "1000000", from: accounts[0] });
+        .send({ gas: "3000000", from: accounts[0] });
 
     console.log("Contract deployed to", result.options.address);
     provider.engine.stop();
