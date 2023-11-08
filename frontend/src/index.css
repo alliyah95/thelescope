@@ -24,7 +24,7 @@
         @apply rounded-b-lg mt-6 sm:p-4;
     }
     .form-input {
-        @apply py-3 px-4 rounded-lg text-ths-black outline-none w-full mt-1;
+        @apply py-3 px-4 rounded-lg text-ths-black placeholder:text-ths-black/60 outline-none w-full mt-1;
     }
     .form-label {
         @apply mb-1 text-sm lg:text-base;
@@ -44,4 +44,15 @@
     .bg-gradient {
         background: linear-gradient(90deg, #f29393, #044afe);
     }
+}
+
+#tsparticles {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    left: 0;
+    top: 0;
+    z-index: -1;
 }
