@@ -37,6 +37,9 @@
     .form-redirect {
         @apply hover:underline hover:underline-offset-2;
     }
+    .form-error {
+        @apply text-ths-pink-300 mt-1;
+    }
 }
 
 @layer utilities {

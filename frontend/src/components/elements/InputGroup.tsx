@@ -14,7 +14,6 @@ const InputGroup: React.FC<InputGroupProps> = ({
             </label>
             <input
                 id={name}
-                name={name}
                 type={type}
                 className="form-input"
                 placeholder={placeholder}

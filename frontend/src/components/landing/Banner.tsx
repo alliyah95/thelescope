@@ -7,7 +7,7 @@ const Banner: React.FC<{}> = () => {
             <div className="max-w-[200px] mx-auto">
                 <img src={theloscopeBanner} />
             </div>
-            <div>Eyeing all your actions.</div>
+            <div className="animate-pulse italic">Eyeing all your actions.</div>
         </div>
     );
 };
