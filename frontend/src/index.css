@@ -24,7 +24,12 @@
         @apply rounded-b-lg mt-6 sm:p-4;
     }
     .form-input {
-        @apply py-3 px-4 rounded-lg text-ths-black placeholder:text-ths-black/60 outline-none w-full mt-1;
+        @apply py-3 px-4 rounded-lg text-ths-black placeholder:text-ths-black/60 outline-none w-full mt-1 border-2 border-transparent;
+    }
+    .form-input:focus,
+    .form-input:hover {
+        background: linear-gradient(white, white) padding-box,
+            linear-gradient(90deg, #f29393, #044afe) border-box;
     }
     .form-label {
         @apply mb-1 text-sm lg:text-base;
