@@ -28,3 +28,4 @@ dist-ssr
 
 # contracts
 build
+local-test.js

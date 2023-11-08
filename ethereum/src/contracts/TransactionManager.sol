@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.4.26;
+pragma solidity ^0.8.9;
 
 contract TransactionManager {
     struct Transaction {
@@ -18,14 +18,14 @@ contract TransactionManager {
     mapping(address => bool) public allowedTransactionCreators;
     mapping(address => bool) public allowedTransactionViewers;
     
-    function TransactionManager(string memory _clinicName, string memory _clinicId) public {
+    constructor(string memory _clinicName, string memory _clinicId) {
         clinicName = _clinicName;
         clinicId = _clinicId;
         clinicAdmin = msg.sender;
         allowedTransactionCreators[msg.sender] = true;
-        allowedTransactionViewers[msg.sender] = true;
+        allowedTransactionViewers[msg.sender] = true; 
     }
-
+    
     modifier onlyAdmin(){
         require(msg.sender == clinicAdmin);
         _;
