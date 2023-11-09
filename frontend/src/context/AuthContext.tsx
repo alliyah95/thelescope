@@ -14,15 +14,16 @@ const AuthContext = createContext<AuthContextType>({
     signInUser: () => {},
     signOutUser: () => {},
     user: null,
+    isLoading: true,
 });
 
 const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setLoading(false);
+            setIsLoading(false);
             if (currentUser) {
                 setUser(currentUser);
             } else {
@@ -52,11 +53,12 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
         signInUser,
         signOutUser,
         user,
+        isLoading,
     };
 
     return (
         <AuthContext.Provider value={authContextValue}>
-            {!loading && children}
+            {!isLoading && children}
         </AuthContext.Provider>
     );
 };

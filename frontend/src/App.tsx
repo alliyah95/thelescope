@@ -1,6 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Auth, Home, ProtectedRoute, Root } from "./pages";
+import { Auth, Home, Root } from "./pages";
+import { ProtectedRoute } from "./routes";
 
 const router = createBrowserRouter([
     {

@@ -1,14 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context";
 import {
     LoginForm,
     RegistrationForm,
     Banner,
     HorizontalRule,
 } from "../components";
-import { AuthForms } from "../types";
+import { AuthForms, AuthContextType } from "../types";
 
 const Auth: React.FC<{}> = () => {
     const [activeForm, setActiveForm] = useState<AuthForms>(AuthForms.Login);
+    const navigate = useNavigate();
+    const [showPage, setShowPage] = useState<boolean>(false);
+    const { user, isLoading } = useAuthContext() as AuthContextType;
+
+    useEffect(() => {
+        if (user && !isLoading) {
+            setShowPage(false);
+            navigate("/home");
+        } else {
+            setShowPage(true);
+        }
+    }, [user, navigate]);
+
+    if (!showPage) {
+        return <></>;
+    }
 
     const switchForm = (form: AuthForms): void => {
         setActiveForm(form);
