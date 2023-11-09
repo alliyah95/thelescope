@@ -11,15 +11,15 @@ export const registrationSchema: ZodType<RegistrationFormData> = zod
             .max(140, {
                 message: "Clinic name must not exceed 140 characters",
             }),
-        adminUsername: zod
+        adminName: zod
             .string()
             .min(5, {
-                message: "Username must be at least 5 characters",
+                message: "Admin name must be at least 5 characters",
             })
-            .max(24, { message: "Username is too long" })
-            .refine((value) => !/\s/.test(value), {
-                message: "Username must not have spaces",
+            .max(140, {
+                message: "Clinic name must not exceed 140 characters",
             }),
+        adminEmail: zod.string().email(),
         adminPassword: zod
             .string()
             .min(8, { message: "Password must be at least 8 characters" })

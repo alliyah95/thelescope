@@ -25,7 +25,7 @@ const LoginForm: React.FC<AuthForm> = ({ onSwitch }) => {
 
     const handleLogin = async (data: LoginFormData): Promise<void> => {
         try {
-            await signInUser(data.username, data.password);
+            await signInUser(data.email, data.password);
             navigate("/home");
             console.log("logged in!");
         } catch (err: any) {
@@ -40,18 +40,18 @@ const LoginForm: React.FC<AuthForm> = ({ onSwitch }) => {
 
             <form onSubmit={handleSubmit(handleLogin)}>
                 <div className="mb-5">
-                    <label htmlFor="username" className="form-label mb-4">
-                        Username
+                    <label htmlFor="email" className="form-label mb-4">
+                        Email address
                     </label>
                     <input
-                        id="username"
+                        id="email"
                         type="text"
                         className="form-input"
-                        placeholder="johndoe"
-                        {...register("username")}
+                        placeholder="johndoe@thelescope.com"
+                        {...register("email")}
                     />
-                    {errors.username && (
-                        <p className="form-error">{errors.username.message}</p>
+                    {errors.email && (
+                        <p className="form-error">{errors.email.message}</p>
                     )}
                 </div>
 

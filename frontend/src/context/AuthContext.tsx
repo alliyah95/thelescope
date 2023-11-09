@@ -36,12 +36,12 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
         };
     }, []);
 
-    const registerUser = (username: string, password: string) => {
-        return createUserWithEmailAndPassword(auth, username, password);
+    const registerUser = (email: string, password: string) => {
+        return createUserWithEmailAndPassword(auth, email, password);
     };
 
-    const signInUser = (username: string, password: string) => {
-        return signInWithEmailAndPassword(auth, username, password);
+    const signInUser = (email: string, password: string) => {
+        return signInWithEmailAndPassword(auth, email, password);
     };
 
     const signOutUser = () => {

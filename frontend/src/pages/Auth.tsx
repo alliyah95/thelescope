@@ -33,7 +33,7 @@ const Auth: React.FC<{}> = () => {
     };
 
     return (
-        <div className="min-h-screen flex justify-center items-center py-12">
+        <div className="min-h-screen flex justify-center items-center py-12 md:py-24 lg:py-32">
             <div className="container max-w-[540px]">
                 <Banner />
                 <HorizontalRule />

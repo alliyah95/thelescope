@@ -34,7 +34,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
         setError("");
 
         try {
-            await registerUser(data.adminUsername, data.adminPassword);
+            await registerUser(data.adminEmail, data.adminPassword);
             console.log("user registered");
             navigate("/home");
         } catch (error: any) {
@@ -57,7 +57,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
                         id="clinicName"
                         type="text"
                         className="form-input"
-                        placeholder="My Clinic"
+                        placeholder="John Doe's Clinic"
                         {...register("clinicName")}
                     />
                     {errors.clinicName && (
@@ -66,21 +66,36 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
                         </p>
                     )}
                 </div>
-
                 <div className="mb-5">
-                    <label htmlFor="adminUsername" className="form-label mb-4">
-                        Admin Username
+                    <label htmlFor="adminName" className="form-label mb-4">
+                        Admin Name
                     </label>
                     <input
-                        id="adminUsername"
+                        id="adminName"
                         type="text"
                         className="form-input"
-                        placeholder="johndoe"
-                        {...register("adminUsername")}
+                        placeholder="John Doe"
+                        {...register("adminName")}
                     />
-                    {errors.adminUsername && (
+                    {errors.adminName && (
+                        <p className="form-error">{errors.adminName.message}</p>
+                    )}
+                </div>
+
+                <div className="mb-5">
+                    <label htmlFor="adminEmail" className="form-label mb-4">
+                        Admin Email
+                    </label>
+                    <input
+                        id="adminEmail"
+                        type="text"
+                        className="form-input"
+                        placeholder="johndoe@thelescope.com"
+                        {...register("adminEmail")}
+                    />
+                    {errors.adminEmail && (
                         <p className="form-error">
-                            {errors.adminUsername.message}
+                            {errors.adminEmail.message}
                         </p>
                     )}
                 </div>

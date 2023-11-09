@@ -11,19 +11,20 @@ export interface AuthForm {
 
 export interface RegistrationFormData {
     clinicName: string;
-    adminUsername: string;
+    adminName: string;
+    adminEmail: string;
     adminPassword: string;
     adminConfirmPassword: string;
 }
 
 export interface LoginFormData {
-    username: string;
+    email: string;
     password: string;
 }
 
 export interface AuthContextType {
-    registerUser: (username: string, password: string) => void;
-    signInUser: (username: string, password: string) => void;
+    registerUser: (email: string, password: string) => void;
+    signInUser: (email: string, password: string) => void;
     signOutUser: () => void;
     user: User | null;
     isLoading: boolean;
