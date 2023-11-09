@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AuthForm, AuthForms, RegistrationFormData } from "../../types";
+import {
+    AuthForm,
+    AuthForms,
+    RegistrationFormData,
+    AuthContextType,
+} from "../../types";
 import { registrationSchema } from "../../utils/schemas";
+import { useAuthContext } from "../../context";
 
 const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
+    const [error, setError] = useState<string>("");
+    const { registerUser } = useAuthContext() as AuthContextType;
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -17,7 +28,19 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
         onSwitch(AuthForms.Login);
     };
 
-    const handleRegistration = (data: RegistrationFormData): void => {
+    const handleRegistration = async (
+        data: RegistrationFormData
+    ): Promise<void> => {
+        setError("");
+
+        try {
+            await registerUser(data.adminUsername, data.adminPassword);
+            console.log("user registered");
+            navigate("/home");
+        } catch (error: any) {
+            setError(error.message);
+            console.log(error.message);
+        }
         console.log(data);
     };
 
@@ -52,7 +75,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
                         id="adminUsername"
                         type="text"
                         className="form-input"
-                        placeholder="john doe"
+                        placeholder="johndoe"
                         {...register("adminUsername")}
                     />
                     {errors.adminUsername && (

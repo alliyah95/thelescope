@@ -1,10 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useAuthContext } from "../../context";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthForm, AuthForms, LoginFormData } from "../../types";
 import { loginSchema } from "../../utils/schemas/loginSchema";
+import { AuthContextType } from "../../types";
 
 const LoginForm: React.FC<AuthForm> = ({ onSwitch }) => {
+    const navigate = useNavigate();
+    const { signInUser } = useAuthContext() as AuthContextType;
+
     const {
         register,
         handleSubmit,
@@ -17,8 +23,14 @@ const LoginForm: React.FC<AuthForm> = ({ onSwitch }) => {
         onSwitch(AuthForms.Registration);
     };
 
-    const handleLogin = (data: LoginFormData): void => {
-        console.log(data);
+    const handleLogin = async (data: LoginFormData): Promise<void> => {
+        try {
+            await signInUser(data.username, data.password);
+            navigate("/home");
+            console.log("logged in!");
+        } catch (err: any) {
+            console.log(err.message);
+        }
     };
 
     return (
@@ -35,7 +47,7 @@ const LoginForm: React.FC<AuthForm> = ({ onSwitch }) => {
                         id="username"
                         type="text"
                         className="form-input"
-                        placeholder="john doe"
+                        placeholder="johndoe"
                         {...register("username")}
                     />
                     {errors.username && (

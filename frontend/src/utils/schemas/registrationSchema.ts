@@ -16,7 +16,10 @@ export const registrationSchema: ZodType<RegistrationFormData> = zod
             .min(5, {
                 message: "Username must be at least 5 characters",
             })
-            .max(24, { message: "Username is too long" }),
+            .max(24, { message: "Username is too long" })
+            .refine((value) => !/\s/.test(value), {
+                message: "Username must not have spaces",
+            }),
         adminPassword: zod
             .string()
             .min(8, { message: "Password must be at least 8 characters" })

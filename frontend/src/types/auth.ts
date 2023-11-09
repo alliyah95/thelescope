@@ -1,3 +1,5 @@
+import { User } from "firebase/auth";
+
 export enum AuthForms {
     Login = "Login",
     Registration = "Registration",
@@ -17,4 +19,11 @@ export interface RegistrationFormData {
 export interface LoginFormData {
     username: string;
     password: string;
+}
+
+export interface AuthContextType {
+    registerUser: (username: string, password: string) => void;
+    signInUser: (username: string, password: string) => void;
+    signOutUser: () => void;
+    user: User | null;
 }
