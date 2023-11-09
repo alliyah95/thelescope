@@ -20,11 +20,32 @@ const transactionManagerPath = path.resolve(
 const source = fs.readFileSync(transactionManagerPath, "utf8");
 
 // compile the contract
-const output = solc.compile(source, 1).contracts[`:${CONTRACT}`];
+const input = {
+    language: "Solidity",
+    sources: {
+        "TransactionManager.sol": {
+            content: source,
+        },
+    },
+    settings: {
+        outputSelection: {
+            "*": {
+                "*": ["*"],
+            },
+        },
+    },
+};
+const output = JSON.parse(solc.compile(JSON.stringify(input))).contracts[
+    "TransactionManager.sol"
+];
 
 // recreate the build folder
 fs.ensureDirSync(buildPath);
 
-// output the contract
-const contractFileName = `${CONTRACT}.json`;
-fs.outputJSONSync(path.resolve(buildPath, contractFileName), output);
+// create file
+for (let contract in output) {
+    fs.outputJsonSync(
+        path.resolve(buildPath, contract.replace(":", "") + ".json"),
+        output[contract]
+    );
+}

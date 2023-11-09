@@ -16,16 +16,12 @@ const deploy = async () => {
     const accounts = await web3.eth.getAccounts();
     console.log("Attempting to deploy contract from account", accounts[0]);
 
-    const result = await new web3.eth.Contract(
-        JSON.parse(compiledContract.interface)
-    )
+    const result = await new web3.eth.Contract(compiledContract.abi)
         .deploy({
-            data: compiledContract.bytecode,
+            data: compiledContract.evm.bytecode.object,
             arguments: [clinicName, clinicId],
         })
-        .send({ gas: "3000000", from: accounts[0] });
-    console.log(compiledContract.interface);
-
+        .send({ gas: "5000000", from: accounts[0] });
     console.log("Contract deployed to", result.options.address);
     provider.engine.stop();
 };

@@ -1,3 +1,66 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        @apply text-white bg-ths-black;
+        font-family: "DM Sans", sans-serif;
+    }
+    h1 {
+        @apply text-3xl md:text-4xl lg:text-5xl font-bold leading-normal;
+    }
+}
+
+@layer components {
+    .btn {
+        @apply bg-gradient text-white p-4 rounded-lg w-full transition-colors duration-300 ease-in-out;
+    }
+    .container {
+        @apply px-6;
+    }
+    .form-container {
+        @apply rounded-b-lg mt-6 sm:p-4;
+    }
+    .form-input {
+        @apply py-3 px-4 rounded-lg text-ths-black placeholder:text-ths-black/60 outline-none w-full mt-1 border-2 border-transparent;
+    }
+    .form-input:focus,
+    .form-input:hover {
+        background: linear-gradient(white, white) padding-box,
+            linear-gradient(90deg, #f29393, #044afe) border-box;
+    }
+    .form-label {
+        @apply mb-1 text-sm lg:text-base;
+    }
+    .form-redirect {
+        @apply hover:underline hover:underline-offset-2;
+    }
+    .form-error {
+        @apply text-ths-pink-300 mt-1;
+    }
+}
+
+@layer utilities {
+    .text-gradient {
+        background: linear-gradient(90deg, #f29393, #044afe);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .bg-gradient {
+        background: linear-gradient(90deg, #f29393, #044afe);
+    }
+}
+
+#tsparticles {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    left: 0;
+    top: 0;
+    z-index: -1;
+}
