@@ -1,4 +1,4 @@
-import theloscopeLogo from "./theloscope.svg";
-import theloscopeBanner from "./banner.webp";
+import thelescopeLogo from "./thelescope.svg";
+import thelescopeBanner from "./banner.webp";
 
-export { theloscopeLogo, theloscopeBanner };
+export { thelescopeLogo, thelescopeBanner };

@@ -1,6 +1,6 @@
 import React, { useCallback, ReactNode } from "react";
 import { loadFull } from "tsparticles";
-import particlesOptions from "../../utils/particlesOptions";
+import particlesOptions from "../../utils/styles/particlesOptions";
 import Particles, { ParticlesProps } from "react-particles";
 
 interface ParticlesBackgroundProps extends ParticlesProps {

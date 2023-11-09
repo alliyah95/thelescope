@@ -30,8 +30,8 @@ const particlesOptions: any = {
             color: "#ffffff",
             distance: 150,
             enable: true,
-            opacity: 0.5,
-            width: 0.2,
+            opacity: 0.45,
+            width: 0.3,
         },
         collisions: {
             enable: true,
@@ -50,7 +50,7 @@ const particlesOptions: any = {
             density: {
                 enable: true,
             },
-            value: 150,
+            value: 200,
         },
         opacity: {
             value: 0.3,
@@ -60,7 +60,7 @@ const particlesOptions: any = {
         },
         size: {
             random: true,
-            value: 3,
+            value: 2.5,
         },
     },
 };
