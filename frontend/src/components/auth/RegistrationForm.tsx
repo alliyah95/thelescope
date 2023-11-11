@@ -7,9 +7,11 @@ import {
     AuthForms,
     RegistrationFormData,
     AuthContextType,
+    ClinicMember,
 } from "../../types";
 import { registrationSchema } from "../../utils/schemas";
 import { useAuthContext } from "../../context";
+import { createUser } from "../../utils/clinic";
 
 const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     const [error, setError] = useState<string>("");
@@ -33,15 +35,21 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     ): Promise<void> => {
         setError("");
 
+        const userData: ClinicMember = {
+            name: data.adminName,
+            email: data.adminEmail,
+            isAdmin: true,
+            permissions: ["CREATE", "READ", "UPDATE", "DELETE"],
+        };
+
         try {
             await registerUser(data.adminEmail, data.adminPassword);
-            console.log("user registered");
+            await createUser(userData);
             navigate("/home");
         } catch (error: any) {
             setError(error.message);
             console.log(error.message);
         }
-        console.log(data);
     };
 
     return (
@@ -49,23 +57,6 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
             <h1 className="sm:mb-2">Create an account</h1>
             <h2 className="mb-6">Please provide the needed information.</h2>
             <form onSubmit={handleSubmit(handleRegistration)}>
-                <div className="mb-5">
-                    <label htmlFor="clinicName" className="form-label mb-4">
-                        Clinic Name
-                    </label>
-                    <input
-                        id="clinicName"
-                        type="text"
-                        className="form-input"
-                        placeholder="John Doe's Clinic"
-                        {...register("clinicName")}
-                    />
-                    {errors.clinicName && (
-                        <p className="form-error">
-                            {errors.clinicName.message}
-                        </p>
-                    )}
-                </div>
                 <div className="mb-5">
                     <label htmlFor="adminName" className="form-label mb-4">
                         Admin Name

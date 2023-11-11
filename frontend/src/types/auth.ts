@@ -10,7 +10,6 @@ export interface AuthForm {
 }
 
 export interface RegistrationFormData {
-    clinicName: string;
     adminName: string;
     adminEmail: string;
     adminPassword: string;

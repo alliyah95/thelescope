@@ -3,14 +3,6 @@ import { RegistrationFormData } from "../../types";
 
 export const registrationSchema: ZodType<RegistrationFormData> = zod
     .object({
-        clinicName: zod
-            .string()
-            .min(5, {
-                message: "Clinic name must be at least 5 characters",
-            })
-            .max(140, {
-                message: "Clinic name must not exceed 140 characters",
-            }),
         adminName: zod
             .string()
             .min(5, {
