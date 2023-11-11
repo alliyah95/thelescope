@@ -13,6 +13,7 @@ export interface Clinic {
 }
 
 export interface ClinicMember {
+    userId: string;
     name: string;
     email: string;
     isAdmin: boolean;

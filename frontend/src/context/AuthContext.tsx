@@ -1,13 +1,14 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { AuthContextType, WrapperElement } from "../types";
+import { AuthContextType, WrapperElement, Collections } from "../types";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
+    User,
 } from "firebase/auth";
-import { auth } from "../config/firebase";
-import { User } from "firebase/auth";
+import { auth, db } from "../config/firebase";
+import { collection, doc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext<AuthContextType>({
     registerUser: () => {},
@@ -20,11 +21,15 @@ const AuthContext = createContext<AuthContextType>({
 const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+    const usersCollectionRef = collection(db, Collections.ClinicMembers);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setIsLoading(false);
             if (currentUser) {
+                console.log(currentUser);
                 setUser(currentUser);
             } else {
                 setUser(null);
@@ -35,6 +40,8 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
             if (unsubscribe) unsubscribe();
         };
     }, []);
+
+    const checkUserRole = () => {};
 
     const registerUser = (email: string, password: string) => {
         return createUserWithEmailAndPassword(auth, email, password);

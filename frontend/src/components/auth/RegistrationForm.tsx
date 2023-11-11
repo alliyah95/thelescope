@@ -35,15 +35,20 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     ): Promise<void> => {
         setError("");
 
-        const userData: ClinicMember = {
-            name: data.adminName,
-            email: data.adminEmail,
-            isAdmin: true,
-            permissions: ["CREATE", "READ", "UPDATE", "DELETE"],
-        };
-
         try {
-            await registerUser(data.adminEmail, data.adminPassword);
+            const registeredUser: any = await registerUser(
+                data.adminEmail,
+                data.adminPassword
+            );
+            const userId = registeredUser.user?.uid;
+            const userData: ClinicMember = {
+                name: data.adminName,
+                email: data.adminEmail,
+                isAdmin: true,
+                permissions: ["CREATE", "READ", "UPDATE", "DELETE"],
+                userId: userId,
+            };
+
             await createUser(userData);
             navigate("/home");
         } catch (error: any) {
