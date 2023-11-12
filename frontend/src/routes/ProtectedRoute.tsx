@@ -4,9 +4,9 @@ import { useAuthContext } from "../context";
 import { AuthContextType, WrapperElement } from "../types";
 
 const ProtectedRoute: React.FC<WrapperElement> = ({ children }) => {
-    const { user } = useAuthContext() as AuthContextType;
+    const { user, isLoading } = useAuthContext() as AuthContextType;
 
-    if (!user) {
+    if (!user && isLoading) {
         return <Navigate to="/" replace />;
     }
 

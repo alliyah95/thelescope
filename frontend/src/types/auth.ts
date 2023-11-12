@@ -1,5 +1,6 @@
 import React from "react";
 import { User } from "firebase/auth";
+import { ClinicMember } from ".";
 
 export enum AuthForms {
     Login = "Login",
@@ -27,8 +28,9 @@ export interface AuthContextType {
     signInUser: (email: string, password: string) => void;
     signOutUser: () => void;
     setCurrentClinic: React.Dispatch<React.SetStateAction<string>>;
-    user: User | null;
+    user: User | null | undefined;
     isLoading: boolean;
     isUserAdmin: boolean;
     currentClinic: string;
+    userInfo: ClinicMember;
 }

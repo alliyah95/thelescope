@@ -11,11 +11,15 @@ import {
 } from "../../types";
 import { registrationSchema } from "../../utils/schemas";
 import { useAuthContext } from "../../context";
-import { createUser, createClinic } from "../../utils/clinic";
+import {
+    createUser,
+    createClinic,
+    addToThelescopeUsers,
+} from "../../utils/clinic";
 
 const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     const [error, setError] = useState<string>("");
-    const { registerUser, setCurrentClinic, currentClinic } =
+    const { registerUser, setCurrentClinic } =
         useAuthContext() as AuthContextType;
     const navigate = useNavigate();
 
@@ -59,6 +63,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
             };
 
             await createUser(userData, clinicId);
+            await addToThelescopeUsers(userData);
             navigate("/home");
         } catch (error: any) {
             setError(error.message);

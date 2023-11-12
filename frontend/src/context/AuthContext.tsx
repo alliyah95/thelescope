@@ -1,15 +1,28 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { AuthContextType, WrapperElement, Collections } from "../types";
+import {
+    AuthContextType,
+    WrapperElement,
+    Collections,
+    ClinicMember,
+} from "../types";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
-    onAuthStateChanged,
-    User,
 } from "firebase/auth";
 import { auth, db } from "../config/firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection } from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import { storeUserInfo } from "../utils/clinic";
 
+const initialUserInfo = {
+    permissions: [],
+    userId: "",
+    name: "",
+    email: "",
+    isAdmin: false,
+};
 const AuthContext = createContext<AuthContextType>({
     registerUser: () => {},
     signInUser: () => {},
@@ -19,54 +32,40 @@ const AuthContext = createContext<AuthContextType>({
     isLoading: true,
     isUserAdmin: false,
     currentClinic: "",
+    userInfo: initialUserInfo,
 });
 
 const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
     const [currentClinic, setCurrentClinic] = useState<string>("");
-    const [isUserAdmin, setIsUserAdmin] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isUserAdmin, setIsUserAdmin] = useState<boolean>(() => {
+        const isAdmin = localStorage.getItem("isAdmin");
+        return JSON.parse(isAdmin as string);
+    });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    ("");
+    const [user, loadingAuth, errorAuth] = useAuthState(auth);
+    const [userInfo, setUserInfo] = useState<ClinicMember>(initialUserInfo);
 
-    const usersCollectionRef = collection(db, Collections.ClinicMembers);
-    const checkUserRole = async (userId: string) => {
-        setIsLoading(true);
-        try {
-            const q = query(usersCollectionRef, where("userId", "==", userId));
-            const querySnapshot = await getDocs(q);
-
-            if (!querySnapshot.empty) {
-                let isAdmin = false;
-                querySnapshot.forEach((doc) => {
-                    const userData = doc.data();
-                    isAdmin = isAdmin || userData.isAdmin;
-                });
-                setIsUserAdmin(isAdmin);
-            } else {
-                console.log("No user found with the specified ID.");
-            }
-
-            setIsLoading(false);
-        } catch (err) {
-            console.error(err);
-            setIsLoading(false);
-        }
-    };
+    const thelescopeUsersQery = collection(db, Collections.ThelescopeUsers);
+    const [thsUsersDocs, loadingThsUsersDocs, errorThsUsersDocs] =
+        useCollectionData(thelescopeUsersQery);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            setIsLoading(false);
-            if (currentUser) {
-                setUser(currentUser);
-                await checkUserRole(currentUser.uid);
-            } else {
-                setUser(null);
-            }
-        });
+        setIsLoading(loadingAuth && loadingThsUsersDocs);
+    }, [loadingAuth]);
 
-        return () => {
-            if (unsubscribe) unsubscribe();
-        };
-    }, []);
+    useEffect(() => {
+        if (user) {
+            thsUsersDocs?.forEach((thsUser) => {
+                if (thsUser.userId === user.uid) {
+                    const parsedInfo = thsUser as ClinicMember;
+                    setUserInfo(parsedInfo);
+                    storeUserInfo(parsedInfo); // remove
+                    return;
+                }
+            });
+        }
+    }, [user, thsUsersDocs]);
 
     const registerUser = (email: string, password: string) => {
         return createUserWithEmailAndPassword(auth, email, password);
@@ -77,6 +76,7 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
     };
 
     const signOutUser = () => {
+        // TODO: delete user info from local storage
         return signOut(auth);
     };
 
@@ -89,6 +89,7 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
         isLoading,
         isUserAdmin,
         currentClinic,
+        userInfo,
     };
 
     return (
