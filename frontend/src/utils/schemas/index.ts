@@ -1,3 +1,5 @@
+import { clinicRegistrationSchema } from "./clinicRegistrationSchema";
+import { loginSchema } from "./loginSchema";
 import { registrationSchema } from "./registrationSchema";
 
-export { registrationSchema };
+export { clinicRegistrationSchema, loginSchema, registrationSchema };
