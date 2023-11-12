@@ -1,6 +1,6 @@
 export enum Collections {
     ClinicMembers = "members",
-    Clinic = "clinic",
+    Clinic = "clinics",
 }
 
 export type Permissions = "CREATE" | "READ" | "UPDATE" | "DELETE";

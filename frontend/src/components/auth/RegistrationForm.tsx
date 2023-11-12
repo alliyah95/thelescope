@@ -15,7 +15,7 @@ import { createUser, createClinic } from "../../utils/clinic";
 
 const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     const [error, setError] = useState<string>("");
-    const { registerUser, setCurrentClinic } =
+    const { registerUser, setCurrentClinic, currentClinic } =
         useAuthContext() as AuthContextType;
     const navigate = useNavigate();
 
@@ -57,6 +57,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
                 clinicId: clinicId,
                 userId: userId,
             };
+
             await createUser(userData, clinicId);
             navigate("/home");
         } catch (error: any) {
