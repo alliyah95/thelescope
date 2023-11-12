@@ -14,15 +14,18 @@ const AuthContext = createContext<AuthContextType>({
     registerUser: () => {},
     signInUser: () => {},
     signOutUser: () => {},
+    setCurrentClinic: () => {},
     user: null,
     isLoading: true,
     isUserAdmin: false,
+    currentClinic: "",
 });
 
 const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentClinic, setCurrentClinic] = useState<string>("");
     const [isUserAdmin, setIsUserAdmin] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const usersCollectionRef = collection(db, Collections.ClinicMembers);
     const checkUserRole = async (userId: string) => {
@@ -81,9 +84,11 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
         registerUser,
         signInUser,
         signOutUser,
+        setCurrentClinic,
         user,
         isLoading,
         isUserAdmin,
+        currentClinic,
     };
 
     return (

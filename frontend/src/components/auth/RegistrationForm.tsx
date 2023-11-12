@@ -11,11 +11,12 @@ import {
 } from "../../types";
 import { registrationSchema } from "../../utils/schemas";
 import { useAuthContext } from "../../context";
-import { createUser } from "../../utils/clinic";
+import { createUser, createClinic } from "../../utils/clinic";
 
 const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     const [error, setError] = useState<string>("");
-    const { registerUser } = useAuthContext() as AuthContextType;
+    const { registerUser, setCurrentClinic } =
+        useAuthContext() as AuthContextType;
     const navigate = useNavigate();
 
     const {
@@ -36,20 +37,27 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
         setError("");
 
         try {
+            // register user
             const registeredUser: any = await registerUser(
                 data.adminEmail,
                 data.adminPassword
             );
+
+            // create clinic
+            // initial name is blank
+            const { clinicId } = await createClinic({ name: "" });
+            setCurrentClinic(clinicId);
+
             const userId = registeredUser.user?.uid;
             const userData: ClinicMember = {
                 name: data.adminName,
                 email: data.adminEmail,
                 isAdmin: true,
                 permissions: ["CREATE", "READ", "UPDATE", "DELETE"],
+                clinicId: clinicId,
                 userId: userId,
             };
-
-            await createUser(userData);
+            await createUser(userData, clinicId);
             navigate("/home");
         } catch (error: any) {
             setError(error.message);

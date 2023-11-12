@@ -4,11 +4,10 @@ import { useAuthContext } from "../context";
 import { AuthContextType, WrapperElement } from "../types";
 
 const AdminRoute: React.FC<WrapperElement> = ({ children }) => {
-    console.log("hello");
     const { isUserAdmin, isLoading } = useAuthContext() as AuthContextType;
-    console.log(isUserAdmin);
 
     if (isLoading) {
+        // change to loading screen
         return <div>loading</div>;
     }
 

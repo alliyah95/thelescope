@@ -1,7 +1,5 @@
-import { DocumentReference } from "firebase/firestore";
-
 export enum Collections {
-    ClinicMembers = "clinicMembers",
+    ClinicMembers = "members",
     Clinic = "clinic",
 }
 
@@ -9,7 +7,7 @@ export type Permissions = "CREATE" | "READ" | "UPDATE" | "DELETE";
 
 export interface Clinic {
     name: string;
-    contractAddress: string;
+    contractAddress?: string;
 }
 
 export interface ClinicMember {
@@ -18,6 +16,6 @@ export interface ClinicMember {
     email: string;
     isAdmin: boolean;
     permissions: Permissions[];
+    clinicId?: string;
     metamaskAddress?: string;
-    clinicId?: DocumentReference;
 }
