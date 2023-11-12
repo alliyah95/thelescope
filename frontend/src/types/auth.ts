@@ -27,4 +27,5 @@ export interface AuthContextType {
     signOutUser: () => void;
     user: User | null;
     isLoading: boolean;
+    isUserAdmin: boolean;
 }

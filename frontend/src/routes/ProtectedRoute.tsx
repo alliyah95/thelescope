@@ -5,11 +5,12 @@ import { AuthContextType, WrapperElement } from "../types";
 
 const ProtectedRoute: React.FC<WrapperElement> = ({ children }) => {
     const { user } = useAuthContext() as AuthContextType;
+
     if (!user) {
         return <Navigate to="/" replace />;
-    } else {
-        return children;
     }
+
+    return children;
 };
 
 export default ProtectedRoute;

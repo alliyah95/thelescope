@@ -1,3 +1,4 @@
+import { checkUserRole } from "./checkUserRole";
 import { createUser } from "./createUser";
 
-export { createUser };
+export { checkUserRole, createUser };

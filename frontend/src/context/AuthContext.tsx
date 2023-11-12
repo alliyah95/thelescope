@@ -8,7 +8,7 @@ import {
     User,
 } from "firebase/auth";
 import { auth, db } from "../config/firebase";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 const AuthContext = createContext<AuthContextType>({
     registerUser: () => {},
@@ -16,21 +16,45 @@ const AuthContext = createContext<AuthContextType>({
     signOutUser: () => {},
     user: null,
     isLoading: true,
+    isUserAdmin: false,
 });
 
 const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [isUserAdmin, setIsUserAdmin] = useState<boolean>(false);
 
     const usersCollectionRef = collection(db, Collections.ClinicMembers);
+    const checkUserRole = async (userId: string) => {
+        setIsLoading(true);
+        try {
+            const q = query(usersCollectionRef, where("userId", "==", userId));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                let isAdmin = false;
+                querySnapshot.forEach((doc) => {
+                    const userData = doc.data();
+                    isAdmin = isAdmin || userData.isAdmin;
+                });
+                setIsUserAdmin(isAdmin);
+            } else {
+                console.log("No user found with the specified ID.");
+            }
+
+            setIsLoading(false);
+        } catch (err) {
+            console.error(err);
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setIsLoading(false);
             if (currentUser) {
-                console.log(currentUser);
                 setUser(currentUser);
+                await checkUserRole(currentUser.uid);
             } else {
                 setUser(null);
             }
@@ -40,8 +64,6 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
             if (unsubscribe) unsubscribe();
         };
     }, []);
-
-    const checkUserRole = () => {};
 
     const registerUser = (email: string, password: string) => {
         return createUserWithEmailAndPassword(auth, email, password);
@@ -61,6 +83,7 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
         signOutUser,
         user,
         isLoading,
+        isUserAdmin,
     };
 
     return (
