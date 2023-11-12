@@ -12,7 +12,14 @@ const Root: React.FC<{}> = () => {
                 <ToastContainer
                     hideProgressBar={true}
                     pauseOnFocusLoss={false}
-                    position={toast.POSITION.TOP_CENTER}
+                    position={toast.POSITION.BOTTOM_RIGHT}
+                    icon={({ type }) =>
+                        type === toast.TYPE.ERROR
+                            ? "🚨"
+                            : type === toast.TYPE.SUCCESS
+                            ? "🚀"
+                            : "🕐"
+                    }
                 />
             </main>
         </ParticlesBackground>

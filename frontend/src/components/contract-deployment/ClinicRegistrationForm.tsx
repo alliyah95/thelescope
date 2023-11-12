@@ -69,8 +69,8 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
                     toast.update(toastId, {
                         type: toast.TYPE.SUCCESS,
                         render: "Contract successfully deployed!",
-                        isLoading: false,
                         autoClose: 5000,
+                        isLoading: false,
                     });
                 });
         } catch (err: any) {

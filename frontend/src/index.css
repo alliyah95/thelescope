@@ -57,6 +57,7 @@
     }
 }
 
+/* TSParticles */
 #tsparticles {
     position: fixed;
     height: 100%;
@@ -66,6 +67,20 @@
     left: 0;
     top: 0;
     z-index: -1;
+}
+
+/* react-toastify */
+.Toastify__toast {
+    color: #010204 !important;
+    background: white !important;
+    font-family: "DM Sans", sans-serif;
+    @apply rounded-lg py-3 font-bold;
+}
+
+.Toastify__toast-body {
+    font-family: "DM Sans", sans-serif;
+    white-space: nowrap;
+    @apply py-0;
 }
 
 /* animations */
