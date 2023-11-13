@@ -4,19 +4,21 @@ import { useAuthContext } from "../context";
 import { AuthContextType, WrapperElement } from "../types";
 
 const AdminRoute: React.FC<WrapperElement> = ({ children }) => {
-    const { isUserAdmin, isLoading } = useAuthContext() as AuthContextType;
+    console.log("admin");
+    const userId = localStorage.getItem("userId");
+    const isAdmin = localStorage.getItem("isAdmin");
 
-    console.log("admin route");
-    console.log("is user admin: ", isUserAdmin);
-    if (isLoading) {
-        // change to loading screen
-        return <div>loading</div>;
+    // const { userInfo, isUserInfoLoading, isUserAdmin } =
+    //     useAuthContext() as AuthContextType;
+
+    // if ((!userInfo && !isUserInfoLoading) || !isUserAdmin) {
+    //     return <Navigate to="/" replace />;
+    // }
+
+    if (!userId || !isAdmin) {
+        console.log("hello");
+        return <Navigate to="/" replace />;
     }
-
-    if (!isUserAdmin) {
-        return <Navigate to="/home" replace />;
-    }
-
     return children;
 };
 

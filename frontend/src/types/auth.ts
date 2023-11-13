@@ -34,4 +34,5 @@ export interface AuthContextType {
     isUserAdmin: boolean;
     currentClinic: string;
     userInfo: ClinicMember;
+    isUserInfoLoading: boolean;
 }

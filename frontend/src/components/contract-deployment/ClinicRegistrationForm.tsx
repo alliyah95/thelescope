@@ -120,14 +120,14 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
             if (err.code === -32002) {
                 toast.update(deploymentToast, {
                     type: toast.TYPE.ERROR,
-                    render: "Please connect your Metamask account",
+                    render: "Connect your Metamask account!",
                     autoClose: 5000,
                     isLoading: false,
                 });
             } else {
                 toast.update(deploymentToast, {
                     type: toast.TYPE.ERROR,
-                    render: "An error has occured. Please try again",
+                    render: "An error has occured",
                     autoClose: 5000,
                     isLoading: false,
                 });

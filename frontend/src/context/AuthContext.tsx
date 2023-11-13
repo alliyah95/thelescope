@@ -35,6 +35,7 @@ const AuthContext = createContext<AuthContextType>({
     isUserAdmin: false,
     currentClinic: "",
     userInfo: initialUserInfo,
+    isUserInfoLoading: true,
 });
 
 const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
@@ -51,24 +52,27 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
     const thelescopeUsersQery = collection(db, Collections.ThelescopeUsers);
     const [thsUsersDocs, loadingThsUsersDocs, errorThsUsersDocs] =
         useCollectionData(thelescopeUsersQery);
+    const [isUserInfoLoading, setIsUerInfoLoading] = useState<boolean>(true);
 
     useEffect(() => {
         setIsLoading(loadingAuth && loadingThsUsersDocs);
     }, [loadingAuth]);
 
     useEffect(() => {
+        setIsUerInfoLoading(true);
         if (user) {
             thsUsersDocs?.forEach((thsUser) => {
                 if (thsUser.userId === user.uid) {
                     const parsedInfo = thsUser as ClinicMember;
-                    console.log(parsedInfo);
                     setUserInfo(parsedInfo);
                     storeUserInfo(parsedInfo);
+                    setIsUerInfoLoading(false);
                     return;
                 }
             });
         }
-    }, [user, thsUsersDocs]);
+        setIsUerInfoLoading(false);
+    }, [user, thsUsersDocs, setIsUerInfoLoading]);
 
     const registerUser = (email: string, password: string) => {
         return createUserWithEmailAndPassword(auth, email, password);
@@ -93,6 +97,7 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
         isUserAdmin,
         currentClinic,
         userInfo,
+        isUserInfoLoading,
     };
 
     return (

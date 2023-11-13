@@ -23,11 +23,9 @@ const router = createBrowserRouter([
             {
                 path: "deploy-contract",
                 element: (
-                    <ProtectedRoute>
-                        <AdminRoute>
-                            <ContractDeploymentPage />
-                        </AdminRoute>
-                    </ProtectedRoute>
+                    <AdminRoute>
+                        <ContractDeploymentPage />
+                    </AdminRoute>
                 ),
             },
         ],

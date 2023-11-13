@@ -63,6 +63,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
                 clinicId: clinicId,
                 userId: userId,
                 clinicName: clinicName,
+                clinicContract: "",
             };
 
             await createUser(userData, clinicId);
