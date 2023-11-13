@@ -6,6 +6,7 @@ import { deleteUserInfo } from "../utils/clinic";
 
 const Home: React.FC<{}> = () => {
     const { user, signOutUser } = useAuthContext() as AuthContextType;
+    const clinicName = localStorage.getItem("clinicName");
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -20,12 +21,7 @@ const Home: React.FC<{}> = () => {
     };
     return (
         <div>
-            <h1> This is the home page</h1>
-            <p>User Email: {user && user.email}</p>
-
-            <button className="btn" onClick={handleLogout}>
-                Log out
-            </button>
+            <h1>Home Page</h1>
         </div>
     );
 };

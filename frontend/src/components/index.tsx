@@ -3,13 +3,13 @@ import RegistrationForm from "./auth/RegistrationForm";
 
 import ClinicRegistrationForm from "./contract-deployment/ClinicRegistrationForm";
 
+import Banner from "./extras/Banner";
 import HorizontalRule from "./extras/HorizontalRule";
 import LoadingTextAnimation from "./extras/LoadingTextAnimation";
 import ParticlesBackground from "./extras/ParticlesBackground";
 import Spinner from "./extras/Spinner";
 
-import Banner from "./landing/Banner";
-
+import Nav from "./ui/Nav";
 export {
     LoginForm,
     RegistrationForm,
@@ -19,4 +19,5 @@ export {
     ParticlesBackground,
     Spinner,
     Banner,
+    Nav,
 };

@@ -55,6 +55,9 @@
     .border-glow {
         box-shadow: 0 0 24px 2px rgba(255, 255, 255, 0.8);
     }
+    .active-nav-link {
+        @apply text-ths-pink-300;
+    }
 }
 
 /* TSParticles */
