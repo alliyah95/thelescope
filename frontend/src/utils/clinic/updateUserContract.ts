@@ -20,6 +20,7 @@ export const updateUserContract = async (
     if (!querySnapshot.empty) {
         const firstDocument = querySnapshot.docs[0];
         const usersDocRef = doc(usersRef, firstDocument.id);
-        return updateDoc(usersDocRef, { contractAddress: contractAddress });
+        localStorage.setItem("clinicContract", `${contractAddress}`);
+        return updateDoc(usersDocRef, { clinicContract: contractAddress });
     }
 };

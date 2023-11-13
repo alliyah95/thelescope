@@ -6,6 +6,7 @@ import ClinicRegistrationForm from "./contract-deployment/ClinicRegistrationForm
 import HorizontalRule from "./extras/HorizontalRule";
 import LoadingTextAnimation from "./extras/LoadingTextAnimation";
 import ParticlesBackground from "./extras/ParticlesBackground";
+import Spinner from "./extras/Spinner";
 
 import Banner from "./landing/Banner";
 
@@ -16,5 +17,6 @@ export {
     LoadingTextAnimation,
     HorizontalRule,
     ParticlesBackground,
+    Spinner,
     Banner,
 };

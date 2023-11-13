@@ -15,8 +15,7 @@ const LoadingTextAnimation: React.FC<{}> = () => {
                     ]
             ).join("");
             setLoadingText(newLoadingText);
-        }, 50);
-
+        }, 20);
         return () => clearInterval(intervalId);
     }, []);
 

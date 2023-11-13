@@ -61,6 +61,7 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
             thsUsersDocs?.forEach((thsUser) => {
                 if (thsUser.userId === user.uid) {
                     const parsedInfo = thsUser as ClinicMember;
+                    console.log(parsedInfo);
                     setUserInfo(parsedInfo);
                     storeUserInfo(parsedInfo);
                     return;

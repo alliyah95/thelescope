@@ -9,12 +9,15 @@ import {
     storeUserInfo,
     updateUserContract,
 } from "../../utils/clinic";
-import { LoadingTextAnimation } from "..";
+import { LoadingTextAnimation, Spinner } from "..";
 
 const ClinicRegistrationForm: React.FC<{}> = () => {
     const [transactionHash, setTransactionHash] = useState<string>("");
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
     const { userInfo } = useAuthContext() as AuthContextType;
+    const [isDeploying, setIsDeploying] = useState<boolean>(false);
+    const [isContractDeployed, setIsContractDeloyed] = useState<boolean>(false);
+    const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
 
     useEffect(() => {
         return () => {
@@ -24,7 +27,20 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
         };
     }, [timeoutId]);
 
+    useEffect(() => {
+        if (!userInfo) {
+            setIsButtonDisabled(true);
+            return;
+        }
+        if (isDeploying || isContractDeployed) {
+            setIsButtonDisabled(true);
+            return;
+        }
+        setIsButtonDisabled(false);
+    }, [isButtonDisabled, isDeploying, userInfo]);
+
     const deployContract = async () => {
+        setIsDeploying(true);
         const deploymentToast = toast.loading("Deploying the contract...");
 
         try {
@@ -75,8 +91,6 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
                 })
                 .on("receipt", async (receipt) => {
                     const contractAddress = receipt.contractAddress;
-                    console.log("Contract Address:", contractAddress);
-
                     const confirmationToast = toast.loading(
                         "Finishing things up..."
                     );
@@ -98,8 +112,11 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
                         autoClose: 2000,
                         isLoading: false,
                     });
+                    setIsDeploying(false);
+                    setIsContractDeloyed(true);
                 });
         } catch (err: any) {
+            setIsDeploying(false);
             if (err.code === -32002) {
                 toast.update(deploymentToast, {
                     type: toast.TYPE.ERROR,
@@ -135,10 +152,17 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
 
             <div className="mt-6">
                 <button
-                    className="btn lg:w-auto bounce-slow font-bold"
+                    className="btn lg:w-auto bounce-slow"
                     onClick={deployContract}
+                    disabled={isButtonDisabled}
                 >
-                    Deploy Contract
+                    {isDeploying && <Spinner />}
+                    {"   "}{" "}
+                    {isDeploying
+                        ? "Deploying..."
+                        : isContractDeployed
+                        ? "Contract deployed!"
+                        : "Deploy Contract"}
                 </button>
             </div>
         </div>
