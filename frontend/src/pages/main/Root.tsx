@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ParticlesBackground, Nav } from "../components";
+import { ParticlesBackground, Nav } from "../../components";
 
 const Root: React.FC<{}> = () => {
     return (

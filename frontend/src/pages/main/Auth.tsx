@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../context";
+import { useAuthContext } from "../../context";
 import {
     LoginForm,
     RegistrationForm,
     Banner,
     HorizontalRule,
-} from "../components";
-import { AuthForms, AuthContextType } from "../types";
+} from "../../components";
+import { AuthForms, AuthContextType } from "../../types";
 
 const Auth: React.FC<{}> = () => {
     const [activeForm, setActiveForm] = useState<AuthForms>(AuthForms.Login);

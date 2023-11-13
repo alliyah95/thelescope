@@ -1,6 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Auth, Home, Root, ContractDeploymentPage } from "./pages";
+import { ContractDeploymentPage } from "./pages/admin";
+import { Auth, Home, Root } from "./pages/main";
 import { AdminRoute, ProtectedRoute } from "./routes";
 
 const router = createBrowserRouter([

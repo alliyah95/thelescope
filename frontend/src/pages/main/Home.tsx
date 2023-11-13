@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../context";
-import { AuthContextType } from "../types";
-import { deleteUserInfo } from "../utils/clinic";
+import { useAuthContext } from "../../context";
+import { AuthContextType } from "../../types";
+import { deleteUserInfo } from "../../utils/clinic";
 
 const Home: React.FC<{}> = () => {
     const { user, signOutUser } = useAuthContext() as AuthContextType;
