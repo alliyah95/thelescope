@@ -9,7 +9,7 @@ export const registrationSchema: ZodType<RegistrationFormData> = zod
                 message: "Admin name must be at least 5 characters",
             })
             .max(140, {
-                message: "Clinic name must not exceed 140 characters",
+                message: "Admin name must not exceed 140 characters",
             }),
         adminEmail: zod.string().email(),
         adminPassword: zod
@@ -17,6 +17,9 @@ export const registrationSchema: ZodType<RegistrationFormData> = zod
             .min(8, { message: "Password must be at least 8 characters" })
             .max(30, { message: "Password is too long" }),
         adminConfirmPassword: zod.string(),
+        clinicName: zod
+            .string()
+            .min(1, { message: "Clinic name cannot be empty" }),
     })
     .refine(
         (data: RegistrationFormData) =>

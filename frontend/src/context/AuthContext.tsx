@@ -22,6 +22,7 @@ const initialUserInfo = {
     name: "",
     email: "",
     isAdmin: false,
+    clinicName: "",
 };
 const AuthContext = createContext<AuthContextType>({
     registerUser: () => {},

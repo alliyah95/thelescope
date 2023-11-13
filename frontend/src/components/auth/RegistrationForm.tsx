@@ -39,6 +39,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
         data: RegistrationFormData
     ): Promise<void> => {
         setError("");
+        console.log(data);
 
         try {
             // register user
@@ -48,8 +49,9 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
             );
 
             // create clinic
-            // initial name is blank
-            const { clinicId } = await createClinic({ name: "" });
+            const { clinicId, name: clinicName } = await createClinic({
+                name: data.clinicName,
+            });
             setCurrentClinic(clinicId);
 
             const userId = registeredUser.user?.uid;
@@ -60,6 +62,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
                 permissions: ["CREATE", "READ", "UPDATE", "DELETE"],
                 clinicId: clinicId,
                 userId: userId,
+                clinicName: clinicName,
             };
 
             await createUser(userData, clinicId);
@@ -76,6 +79,23 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
             <h1 className="sm:mb-2">Create an account</h1>
             <h2 className="mb-6">Please provide the needed information.</h2>
             <form onSubmit={handleSubmit(handleRegistration)}>
+                <div className="mb-5">
+                    <label htmlFor="clinicName" className="form-label mb-4">
+                        Clinic Name
+                    </label>
+                    <input
+                        id="clinicName"
+                        type="text"
+                        className="form-input"
+                        placeholder="My Clinic"
+                        {...register("clinicName")}
+                    />
+                    {errors.clinicName && (
+                        <p className="form-error">
+                            {errors.clinicName.message}
+                        </p>
+                    )}
+                </div>
                 <div className="mb-5">
                     <label htmlFor="adminName" className="form-label mb-4">
                         Admin Name

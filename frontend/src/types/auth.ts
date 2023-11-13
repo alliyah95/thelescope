@@ -16,6 +16,7 @@ export interface RegistrationFormData {
     adminEmail: string;
     adminPassword: string;
     adminConfirmPassword: string;
+    clinicName: string;
 }
 
 export interface LoginFormData {

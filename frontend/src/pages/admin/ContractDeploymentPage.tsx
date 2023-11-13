@@ -15,12 +15,12 @@ const ContractDeploymentPage: React.FC<{}> = () => {
                         <p className="lg:text-lg mb-2">Hello there!</p>
                         <p className="lg:text-lg">
                             Thank you for signing up. To start using the
-                            application, please enter your clinic name, and then
-                            press the button below. Make sure that you have{" "}
+                            application, press the button below to deploy a
+                            contract for your clinic. Make sure that you have{" "}
                             <span className="text-ths-pink-300 font-bold">
                                 Metamask
                             </span>{" "}
-                            in your browser 😉
+                            installed in your browser 😉
                         </p>
 
                         <ClinicRegistrationForm />

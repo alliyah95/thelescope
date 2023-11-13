@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
-import { Clinic } from "../../types";
-import { clinicRegistrationSchema } from "../../utils/schemas";
+import { useAuthContext } from "../../context";
+import { AuthContextType } from "../../types";
 import { getWeb3 } from "../../web3/utils";
 import { TransactionManager } from "../../web3/abi";
 
 const ClinicRegistrationForm: React.FC<{}> = () => {
     const [transactionHash, setTransactionHash] = useState<string>("");
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<Clinic>({ resolver: zodResolver(clinicRegistrationSchema) });
+    const { userInfo } = useAuthContext() as AuthContextType;
 
     useEffect(() => {
         return () => {
@@ -24,7 +18,7 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
         };
     }, [timeoutId]);
 
-    const deployContract = async (data: Clinic) => {
+    const deployContract = async () => {
         const toastId = toast.loading("Deploying the contract...");
 
         try {
@@ -35,7 +29,7 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
             // deploy the contract
             const deployedContract = newContract.deploy({
                 data: TransactionManager.evm.bytecode.object,
-                arguments: [data.name, "1234"],
+                arguments: [userInfo.clinicName, `${userInfo.clinicId}`],
             });
 
             // 1 minute to check if a value is assigned to transactionHash
@@ -74,39 +68,48 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
                     });
                 });
         } catch (err: any) {
-            toast.update(toastId, {
-                type: toast.TYPE.ERROR,
-                render: err.toString(),
-                autoClose: 5000,
-                isLoading: false,
-            });
+            if (err.code === -32002) {
+                toast.update(toastId, {
+                    type: toast.TYPE.ERROR,
+                    render: "Please connect your Metamask account",
+                    autoClose: 5000,
+                    isLoading: false,
+                });
+            } else {
+                toast.update(toastId, {
+                    type: toast.TYPE.ERROR,
+                    render: "An error has occured. Please try again",
+                    autoClose: 5000,
+                    isLoading: false,
+                });
+            }
         }
     };
 
     return (
-        <form className="mt-8" onSubmit={handleSubmit(deployContract)}>
+        <div className="mt-8">
             <div className="mb-5 max-w-xl lg:max-w-md mx-auto">
+                <p className="text-ths-pink-300 mb-2 italic text-sm">
+                    Thelescope contract deployment for:
+                </p>
                 <input
                     id="name"
                     type="text"
                     className="form-input text-center placeholder:text-center border-glow"
-                    placeholder="Enter the name of your clinic"
-                    {...register("name")}
+                    value={userInfo.clinicName}
+                    readOnly
                 />
-                {errors.name && (
-                    <p className="form-error">{errors.name.message}</p>
-                )}
             </div>
 
             <div className="mt-6">
                 <button
-                    type="submit"
                     className="btn lg:w-auto bounce-slow font-bold"
+                    onClick={deployContract}
                 >
                     Deploy Contract
                 </button>
             </div>
-        </form>
+        </div>
     );
 };
 

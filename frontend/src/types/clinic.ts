@@ -17,6 +17,7 @@ export interface ThelescopeUser {
     email: string;
     isAdmin: boolean;
     clinicId?: string;
+    clinicName: string;
 }
 
 export interface ClinicMember extends ThelescopeUser {
