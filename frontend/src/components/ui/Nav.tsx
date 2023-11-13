@@ -102,7 +102,7 @@ const Nav: React.FC<{}> = () => {
     return (
         <>
             <Navbar
-                className="h-max max-w-full py-4 px-4 xl:px-8 lg:py-4 mx-auto md:rounded-md md:w-[98%] bg-white/10"
+                className="h-max py-4  lg:py-4 mx-auto rounded-md w-[95%] md:w-[98%] bg-white/10"
                 shadow={false}
                 blurred={false}
                 fullWidth={true}

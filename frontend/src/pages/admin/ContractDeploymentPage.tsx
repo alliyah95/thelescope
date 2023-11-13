@@ -5,7 +5,7 @@ const ContractDeploymentPage: React.FC<{}> = () => {
     const contract = localStorage.getItem("clinicContract");
 
     return (
-        <div className="min-h-screen flex justify-center items-center py-12 md:py-24 lg:py-32">
+        <div className="min-h-[85vh] flex justify-center items-center py-12 md:py-24 lg:py-32">
             <div className="container max-w-[1024px] mx-auto fade-in-up">
                 <div className="text-center">
                     <Banner />

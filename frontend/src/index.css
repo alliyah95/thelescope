@@ -40,6 +40,12 @@
     .form-error {
         @apply text-ths-pink-300 mt-1;
     }
+    .main-page-wrapper {
+        @apply mx-auto w-[95%] md:w-[98%] lg:px-8;
+    }
+    .main-page-heading {
+        @apply text-xl lg:text-2xl xl:text-3xl;
+    }
 }
 
 @layer utilities {
