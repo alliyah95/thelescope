@@ -23,4 +23,5 @@ export interface ThelescopeUser {
 export interface ClinicMember extends ThelescopeUser {
     permissions: Permissions[];
     metamaskAddress?: string;
+    clinicContract: string;
 }

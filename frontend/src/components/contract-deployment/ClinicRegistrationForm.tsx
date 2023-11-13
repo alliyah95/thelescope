@@ -4,6 +4,7 @@ import { useAuthContext } from "../../context";
 import { AuthContextType } from "../../types";
 import { getWeb3 } from "../../web3/utils";
 import { TransactionManager } from "../../web3/abi";
+import { updateContractAddress, storeUserInfo } from "../../utils/clinic";
 
 const ClinicRegistrationForm: React.FC<{}> = () => {
     const [transactionHash, setTransactionHash] = useState<string>("");
@@ -19,7 +20,7 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
     }, [timeoutId]);
 
     const deployContract = async () => {
-        const toastId = toast.loading("Deploying the contract...");
+        const deploymentToast = toast.loading("Deploying the contract...");
 
         try {
             const web3 = await getWeb3();
@@ -37,7 +38,7 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
             // after 1 minute
             const _timeoutId = setTimeout(() => {
                 if (!transactionHash) {
-                    toast.update(toastId, {
+                    toast.update(deploymentToast, {
                         type: toast.TYPE.ERROR,
                         render: "Deployment unsuccessful.",
                         autoClose: 5000,
@@ -60,23 +61,46 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
                 .on("confirmation", () => {
                     clearTimeout(_timeoutId);
                     setTimeoutId(null);
-                    toast.update(toastId, {
+                    toast.update(deploymentToast, {
                         type: toast.TYPE.SUCCESS,
                         render: "Contract successfully deployed!",
-                        autoClose: 5000,
+                        autoClose: 2000,
+                        isLoading: false,
+                    });
+                })
+                .on("receipt", async (receipt) => {
+                    const contractAddress = receipt.contractAddress;
+                    console.log("Contract Address:", contractAddress);
+
+                    const confirmationToast = toast.loading(
+                        "Finishing things up..."
+                    );
+                    await updateContractAddress(
+                        `${userInfo.clinicId}`,
+                        `${contractAddress}`
+                    );
+                    storeUserInfo({
+                        ...userInfo,
+                        clinicContract: `${contractAddress}`,
+                    });
+
+                    toast.update(confirmationToast, {
+                        type: toast.TYPE.SUCCESS,
+                        render: "Done!",
+                        autoClose: 2000,
                         isLoading: false,
                     });
                 });
         } catch (err: any) {
             if (err.code === -32002) {
-                toast.update(toastId, {
+                toast.update(deploymentToast, {
                     type: toast.TYPE.ERROR,
                     render: "Please connect your Metamask account",
                     autoClose: 5000,
                     isLoading: false,
                 });
             } else {
-                toast.update(toastId, {
+                toast.update(deploymentToast, {
                     type: toast.TYPE.ERROR,
                     render: "An error has occured. Please try again",
                     autoClose: 5000,

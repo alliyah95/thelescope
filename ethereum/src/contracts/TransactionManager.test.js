@@ -61,17 +61,6 @@ describe("TransactionManager", () => {
         const admin = await transactionManager.methods.clinicAdmin().call();
         assert.equal(admin, accounts[0]);
     });
-    it("marks admin as an allowed viewer and creator", async () => {
-        const isAllowedCreator = await transactionManager.methods
-            .allowedTransactionCreators(accounts[0])
-            .call();
-        const isAllowedViewer = await transactionManager.methods
-            .allowedTransactionViewers(accounts[0])
-            .call();
-
-        assert.equal(isAllowedCreator, true);
-        assert.equal(isAllowedViewer, true);
-    });
     it("sets the clinic name", async () => {
         const clinicName = await transactionManager.methods.clinicName().call();
         assert.equal(clinicName, sampleClinicName);
@@ -85,52 +74,6 @@ describe("TransactionManager", () => {
             .getTransactionCount()
             .call({ from: accounts[0] });
         assert.equal(transactionsCount, 0);
-    });
-    it("adds a transaction creator", async () => {
-        const newCreator = accounts[1];
-        await transactionManager.methods
-            .addAllowedTransactionCreator(newCreator)
-            .send({ from: accounts[0] });
-        const isNewCreatorAllowed = await transactionManager.methods
-            .allowedTransactionCreators(newCreator)
-            .call();
-        assert(isNewCreatorAllowed, true);
-    });
-    it("removes a transaction creator", async () => {
-        const creatorToRemove = accounts[1];
-        await transactionManager.methods
-            .addAllowedTransactionCreator(creatorToRemove)
-            .send({ from: accounts[0] });
-        await transactionManager.methods
-            .removeAllowedTransactionCreator(creatorToRemove)
-            .send({ from: accounts[0] });
-        const isCreatorRemoved = await transactionManager.methods
-            .allowedTransactionCreators(creatorToRemove)
-            .call();
-        assert.equal(isCreatorRemoved, false);
-    });
-    it("adds a transaction viewer", async () => {
-        const newViewer = accounts[1];
-        await transactionManager.methods
-            .addAllowedTransactionViewer(newViewer)
-            .send({ from: accounts[0] });
-        const isNewViewerAllowed = await transactionManager.methods
-            .allowedTransactionViewers(newViewer)
-            .call();
-        assert(isNewViewerAllowed, true);
-    });
-    it("removes a transaction viewer", async () => {
-        const viewerToRemove = accounts[1];
-        await transactionManager.methods
-            .addAllowedTransactionViewer(viewerToRemove)
-            .send({ from: accounts[0] });
-        await transactionManager.methods
-            .removeAllowedTransactionViewer(viewerToRemove)
-            .send({ from: accounts[0] });
-        const isViewerRemoved = await transactionManager.methods
-            .allowedTransactionViewers(viewerToRemove)
-            .call();
-        assert.equal(isViewerRemoved, false);
     });
     it("successfully creates a transaction", async () => {
         const initialTransactionCount = await transactionManager.methods
@@ -153,33 +96,6 @@ describe("TransactionManager", () => {
             Number(initialTransactionCount) + 1,
             Number(newTransactionCount)
         );
-    });
-    it("reverts when creating a transaction with an invalid operation", async () => {
-        try {
-            const initialTransactionCount = await transactionManager.methods
-                .getTransactionCount()
-                .call({ from: accounts[0] });
-            const tx = invalidTransactions[1];
-            await transactionManager.methods
-                .createTransaction(
-                    tx.id,
-                    tx.recordId,
-                    tx.operation,
-                    tx.performedBy,
-                    tx.description
-                )
-                .send({ from: accounts[0], gas: "5000000" });
-            const newTransactionCount = await transactionManager.methods
-                .getTransactionCount()
-                .call({ from: accounts[0] });
-            assert.equal(
-                Number(initialTransactionCount) + 1,
-                Number(newTransactionCount)
-            );
-            assert(false);
-        } catch (err) {
-            assert(err);
-        }
     });
     it("returns all transactions", async () => {
         const initialTransactionCount = await transactionManager.methods

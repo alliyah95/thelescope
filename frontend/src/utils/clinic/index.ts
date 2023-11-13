@@ -4,6 +4,7 @@ import { createClinic } from "./createClinic";
 import { createUser } from "./createUser";
 import { deleteUserInfo } from "./deleteUserInfo";
 import { storeUserInfo } from "./storeUserInfo";
+import { updateContractAddress } from "./updateContractAddress";
 
 export {
     addToThelescopeUsers,
@@ -12,4 +13,5 @@ export {
     createUser,
     deleteUserInfo,
     storeUserInfo,
+    updateContractAddress,
 };
