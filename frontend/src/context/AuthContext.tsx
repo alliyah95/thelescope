@@ -11,9 +11,9 @@ import {
     signOut,
 } from "firebase/auth";
 import { auth, db } from "../config/firebase";
-import { collection } from "firebase/firestore";
+import { collection, doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { useCollectionData, useDocument } from "react-firebase-hooks/firestore";
 import { storeUserInfo } from "../utils/clinic";
 
 const initialUserInfo = {
@@ -62,7 +62,7 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
                 if (thsUser.userId === user.uid) {
                     const parsedInfo = thsUser as ClinicMember;
                     setUserInfo(parsedInfo);
-                    storeUserInfo(parsedInfo); // remove
+                    storeUserInfo(parsedInfo);
                     return;
                 }
             });

@@ -4,7 +4,12 @@ import { useAuthContext } from "../../context";
 import { AuthContextType } from "../../types";
 import { getWeb3 } from "../../web3/utils";
 import { TransactionManager } from "../../web3/abi";
-import { updateContractAddress, storeUserInfo } from "../../utils/clinic";
+import {
+    updateContractAddress,
+    storeUserInfo,
+    updateUserContract,
+} from "../../utils/clinic";
+import { LoadingTextAnimation } from "..";
 
 const ClinicRegistrationForm: React.FC<{}> = () => {
     const [transactionHash, setTransactionHash] = useState<string>("");
@@ -30,7 +35,7 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
             // deploy the contract
             const deployedContract = newContract.deploy({
                 data: TransactionManager.evm.bytecode.object,
-                arguments: [userInfo.clinicName, `${userInfo.clinicId}`],
+                arguments: [`${userInfo.clinicName}`, `${userInfo.clinicId}`],
             });
 
             // 1 minute to check if a value is assigned to transactionHash
@@ -83,7 +88,10 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
                         ...userInfo,
                         clinicContract: `${contractAddress}`,
                     });
-
+                    updateUserContract(
+                        `${userInfo.userId}`,
+                        `${contractAddress}`
+                    );
                     toast.update(confirmationToast, {
                         type: toast.TYPE.SUCCESS,
                         render: "Done!",
@@ -116,13 +124,13 @@ const ClinicRegistrationForm: React.FC<{}> = () => {
                 <p className="text-ths-pink-300 mb-2 italic text-sm">
                     Thelescope contract deployment for:
                 </p>
-                <input
-                    id="name"
-                    type="text"
-                    className="form-input text-center placeholder:text-center border-glow"
-                    value={userInfo.clinicName}
-                    readOnly
-                />
+                <div className="form-input bg-white text-center font-bold border-glow">
+                    {userInfo.clinicName ? (
+                        <p>{userInfo.clinicName}</p>
+                    ) : (
+                        <LoadingTextAnimation />
+                    )}
+                </div>
             </div>
 
             <div className="mt-6">
