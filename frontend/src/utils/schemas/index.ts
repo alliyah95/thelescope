@@ -1,4 +1,5 @@
 import { loginSchema } from "./loginSchema";
+import { patientSchema } from "./patientSchema";
 import { registrationSchema } from "./registrationSchema";
 
-export { loginSchema, registrationSchema };
+export { loginSchema, patientSchema, registrationSchema };

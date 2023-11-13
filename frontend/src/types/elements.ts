@@ -5,3 +5,8 @@ export interface BaseElement {
 export interface WrapperElement {
     children: React.ReactNode;
 }
+
+export interface ModalProps {
+    children: React.ReactNode;
+    onClose: Function;
+}

@@ -25,3 +25,14 @@ export interface ClinicMember extends ThelescopeUser {
     metamaskAddress?: string;
     clinicContract: string;
 }
+
+export interface PatientFormData {
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    age: number;
+    gender: string;
+    contactNumber: string;
+    emailAddress: string;
+    address: string;
+}
