@@ -1,5 +1,5 @@
 {
-    "name": "theloscope",
+    "name": "thelescope",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -17,11 +17,14 @@
         "firebase": "^10.5.2",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-firebase-hooks": "^5.1.1",
         "react-hook-form": "^7.48.2",
         "react-particles": "^2.12.2",
         "react-router-dom": "^6.18.0",
+        "react-toastify": "^9.1.3",
         "tsparticles": "^2.12.0",
         "web3": "^4.2.2",
+        "web3-core": "^4.3.1",
         "zod": "^3.22.4"
     },
     "devDependencies": {

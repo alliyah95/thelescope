@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAuthContext } from "../../context";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthForm, AuthForms, LoginFormData } from "../../types";
-import { loginSchema } from "../../utils/schemas/loginSchema";
+import { loginSchema } from "../../utils/schemas";
 import { AuthContextType } from "../../types";
 
 const LoginForm: React.FC<AuthForm> = ({ onSwitch }) => {

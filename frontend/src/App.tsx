@@ -1,7 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Auth, Home, Root } from "./pages";
-import { ProtectedRoute } from "./routes";
+import { Auth, Home, Root, ContractDeploymentPage } from "./pages";
+import { AdminRoute, ProtectedRoute } from "./routes";
 
 const router = createBrowserRouter([
     {
@@ -17,6 +17,16 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <Home />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "deploy-contract",
+                element: (
+                    <ProtectedRoute>
+                        <AdminRoute>
+                            <ContractDeploymentPage />
+                        </AdminRoute>
                     </ProtectedRoute>
                 ),
             },

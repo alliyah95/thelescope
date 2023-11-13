@@ -45,14 +45,12 @@ beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
 
     // deploy the contract
-    transactionManager = await new web3.eth.Contract(
-        JSON.parse(compiledContract.interface)
-    )
+    transactionManager = await new web3.eth.Contract(compiledContract.abi)
         .deploy({
-            data: compiledContract.bytecode,
+            data: compiledContract.evm.bytecode.object,
             arguments: [sampleClinicName, sampleClinicId],
         })
-        .send({ gas: "3000000", from: accounts[0] });
+        .send({ gas: "5000000", from: accounts[0] });
 });
 
 describe("TransactionManager", () => {

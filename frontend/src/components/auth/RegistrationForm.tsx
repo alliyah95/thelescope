@@ -7,13 +7,20 @@ import {
     AuthForms,
     RegistrationFormData,
     AuthContextType,
+    ClinicMember,
 } from "../../types";
 import { registrationSchema } from "../../utils/schemas";
 import { useAuthContext } from "../../context";
+import {
+    createUser,
+    createClinic,
+    addToThelescopeUsers,
+} from "../../utils/clinic";
 
 const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     const [error, setError] = useState<string>("");
-    const { registerUser } = useAuthContext() as AuthContextType;
+    const { registerUser, setCurrentClinic } =
+        useAuthContext() as AuthContextType;
     const navigate = useNavigate();
 
     const {
@@ -32,16 +39,39 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
         data: RegistrationFormData
     ): Promise<void> => {
         setError("");
+        console.log(data);
 
         try {
-            await registerUser(data.adminEmail, data.adminPassword);
-            console.log("user registered");
+            // register user
+            const registeredUser: any = await registerUser(
+                data.adminEmail,
+                data.adminPassword
+            );
+
+            // create clinic
+            const { clinicId, name: clinicName } = await createClinic({
+                name: data.clinicName,
+            });
+            setCurrentClinic(clinicId);
+
+            const userId = registeredUser.user?.uid;
+            const userData: ClinicMember = {
+                name: data.adminName,
+                email: data.adminEmail,
+                isAdmin: true,
+                permissions: ["CREATE", "READ", "UPDATE", "DELETE"],
+                clinicId: clinicId,
+                userId: userId,
+                clinicName: clinicName,
+            };
+
+            await createUser(userData, clinicId);
+            await addToThelescopeUsers(userData);
             navigate("/home");
         } catch (error: any) {
             setError(error.message);
             console.log(error.message);
         }
-        console.log(data);
     };
 
     return (
@@ -57,7 +87,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
                         id="clinicName"
                         type="text"
                         className="form-input"
-                        placeholder="John Doe's Clinic"
+                        placeholder="My Clinic"
                         {...register("clinicName")}
                     />
                     {errors.clinicName && (
