@@ -19,8 +19,7 @@ import {
 
 const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     const [error, setError] = useState<string>("");
-    const { registerUser, setCurrentClinic } =
-        useAuthContext() as AuthContextType;
+    const { registerUser } = useAuthContext() as AuthContextType;
     const navigate = useNavigate();
 
     const {
@@ -52,7 +51,6 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
             const { clinicId, name: clinicName } = await createClinic({
                 name: data.clinicName,
             });
-            setCurrentClinic(clinicId);
 
             const userId = registeredUser.user?.uid;
             const userData: ClinicMember = {
@@ -63,7 +61,6 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
                 clinicId: clinicId,
                 userId: userId,
                 clinicName: clinicName,
-                clinicContract: "",
             };
 
             await createUser(userData, clinicId);

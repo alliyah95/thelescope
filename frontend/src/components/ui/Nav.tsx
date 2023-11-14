@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
     Navbar,
-    MobileNav,
+    Collapse,
     Typography,
     IconButton,
 } from "@material-tailwind/react";
@@ -131,7 +131,7 @@ const Nav: React.FC<{}> = () => {
                         </IconButton>
                     </div>
                 </div>
-                <MobileNav open={openNav}>{navList}</MobileNav>
+                <Collapse open={openNav}>{openNav && navList}</Collapse>
             </Navbar>
         </>
     );

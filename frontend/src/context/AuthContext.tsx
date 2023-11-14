@@ -23,23 +23,20 @@ const initialUserInfo = {
     email: "",
     isAdmin: false,
     clinicName: "",
-    clinicContract: "",
 };
+
 const AuthContext = createContext<AuthContextType>({
     registerUser: () => {},
     signInUser: () => {},
     signOutUser: () => {},
-    setCurrentClinic: () => {},
     user: null,
     isLoading: true,
     isUserAdmin: false,
-    currentClinic: "",
     userInfo: initialUserInfo,
     isUserInfoLoading: true,
 });
 
 const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
-    const [currentClinic, setCurrentClinic] = useState<string>("");
     const [isUserAdmin, setIsUserAdmin] = useState<boolean>(() => {
         const isAdmin = localStorage.getItem("isAdmin");
         return JSON.parse(isAdmin as string);
@@ -91,11 +88,9 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
         registerUser,
         signInUser,
         signOutUser,
-        setCurrentClinic,
         user,
         isLoading,
         isUserAdmin,
-        currentClinic,
         userInfo,
         isUserInfoLoading,
     };

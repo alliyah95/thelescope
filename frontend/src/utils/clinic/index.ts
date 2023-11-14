@@ -5,8 +5,6 @@ import { createUser } from "./createUser";
 import { deleteUserInfo } from "./deleteUserInfo";
 import { generateTransactionDescription } from "./generateTransactionDescription";
 import { storeUserInfo } from "./storeUserInfo";
-import { updateContractAddress } from "./updateContractAddress";
-import { updateUserContract } from "./updateUserContract";
 
 export {
     addToThelescopeUsers,
@@ -16,6 +14,4 @@ export {
     deleteUserInfo,
     generateTransactionDescription,
     storeUserInfo,
-    updateContractAddress,
-    updateUserContract,
 };
