@@ -31,7 +31,16 @@ export const TransactionManagerABI = [
     {
         inputs: [
             { internalType: "string", name: "_id", type: "string" },
-            { internalType: "string", name: "_recordId", type: "string" },
+            {
+                internalType: "string",
+                name: "_involvedData",
+                type: "string",
+            },
+            {
+                internalType: "string",
+                name: "_involvedDataId",
+                type: "string",
+            },
             { internalType: "string", name: "_operation", type: "string" },
             {
                 internalType: "string",
@@ -61,10 +70,19 @@ export const TransactionManagerABI = [
         name: "transactions",
         outputs: [
             { internalType: "string", name: "id", type: "string" },
-            { internalType: "string", name: "recordId", type: "string" },
             { internalType: "string", name: "operation", type: "string" },
             { internalType: "string", name: "performedBy", type: "string" },
             { internalType: "string", name: "description", type: "string" },
+            {
+                internalType: "string",
+                name: "invlovedData",
+                type: "string",
+            },
+            {
+                internalType: "string",
+                name: "involvedDataId",
+                type: "string",
+            },
             { internalType: "uint256", name: "timeStamp", type: "uint256" },
         ],
         stateMutability: "view",

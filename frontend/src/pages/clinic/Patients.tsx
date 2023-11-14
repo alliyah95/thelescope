@@ -10,7 +10,7 @@ const Patients: React.FC<{}> = () => {
     };
 
     return (
-        <div className="main-page-wrapper lg:bg-white/10">
+        <div className="main-page-wrapper rounded-lg lg:bg-white/10">
             <div className="flex flex-col gap-3 lg:flex-row lg:justify-between lg:items-center">
                 <h1 className="main-page-heading">Clinic Patients</h1>
                 <div>

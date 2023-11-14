@@ -36,3 +36,7 @@ export interface PatientFormData {
     emailAddress: string;
     address: string;
 }
+
+export interface PatientDocument extends PatientFormData {
+    customId: string;
+}

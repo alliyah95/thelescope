@@ -7,7 +7,7 @@ contract TransactionManager {
         string operation;
         string performedBy;
         string description;
-        string invlovedData;
+        string involvedData;
         string involvedDataId;
         uint256 timeStamp; 
     }
@@ -28,7 +28,7 @@ contract TransactionManager {
         public {
             Transaction memory newTransaction;
             newTransaction.id = _id;
-            newTransaction.invlovedData = _involvedData;
+            newTransaction.involvedData = _involvedData;
             newTransaction.involvedDataId = _involvedDataId;
             newTransaction.operation = _operation;
             newTransaction.performedBy = _performedBy;
