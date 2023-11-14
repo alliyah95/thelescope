@@ -13,19 +13,19 @@ let sampleClinicId = "123456789";
 const sampleTransactions = {
     1: {
         id: "abcdefg",
-        recordId: "aabbccdd",
+        involvedData: "Patient",
+        involvedDataId: "123456789",
         operation: "CREATE",
-        performedBy: "jake",
-        description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
+        performedBy: "Jake",
+        description: "Created a new patient",
     },
     2: {
-        id: "hijkl",
-        recordId: "eeffgg",
+        id: "hijklm",
+        involvedData: "Record",
+        involvedDataId: "987654321",
         operation: "UPDATE",
-        performedBy: "jaeyun",
-        description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed",
+        performedBy: "Jaeyun",
+        description: "Updated a patient record",
     },
 };
 
@@ -83,7 +83,8 @@ describe("TransactionManager", () => {
         await transactionManager.methods
             .createTransaction(
                 tx.id,
-                tx.recordId,
+                tx.involvedData,
+                tx.involvedDataId,
                 tx.operation,
                 tx.performedBy,
                 tx.description
@@ -105,7 +106,8 @@ describe("TransactionManager", () => {
         await transactionManager.methods
             .createTransaction(
                 tx1.id,
-                tx1.recordId,
+                tx1.involvedData,
+                tx1.involvedDataId,
                 tx1.operation,
                 tx1.performedBy,
                 tx1.description
@@ -115,7 +117,8 @@ describe("TransactionManager", () => {
         await transactionManager.methods
             .createTransaction(
                 tx2.id,
-                tx2.recordId,
+                tx2.involvedData,
+                tx2.involvedDataId,
                 tx2.operation,
                 tx2.performedBy,
                 tx2.description

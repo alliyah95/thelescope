@@ -4,10 +4,11 @@ pragma solidity ^0.8.9;
 contract TransactionManager {
     struct Transaction {
         string id;
-        string recordId; 
         string operation;
         string performedBy;
         string description;
+        string invlovedData;
+        string involvedDataId;
         uint256 timeStamp; 
     }
 
@@ -23,11 +24,12 @@ contract TransactionManager {
         clinicAdmin = msg.sender;
     }
 
-    function createTransaction(string memory _id, string memory _recordId, string memory _operation, string memory _performedBy, string memory _description) 
+    function createTransaction(string memory _id, string memory _involvedData, string memory _involvedDataId, string memory _operation, string memory _performedBy, string memory _description) 
         public {
             Transaction memory newTransaction;
             newTransaction.id = _id;
-            newTransaction.recordId = _recordId;
+            newTransaction.invlovedData = _involvedData;
+            newTransaction.involvedDataId = _involvedDataId;
             newTransaction.operation = _operation;
             newTransaction.performedBy = _performedBy;
             newTransaction.timeStamp = block.timestamp;
