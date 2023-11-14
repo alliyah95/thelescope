@@ -3,8 +3,6 @@ import RegistrationForm from "./auth/RegistrationForm";
 
 import PatientForm from "./clinic/PatientForm";
 
-import ClinicRegistrationForm from "./contract-deployment/ClinicRegistrationForm";
-
 import Banner from "./extras/Banner";
 import HorizontalRule from "./extras/HorizontalRule";
 import LoadingTextAnimation from "./extras/LoadingTextAnimation";
@@ -18,7 +16,6 @@ export {
     LoginForm,
     RegistrationForm,
     PatientForm,
-    ClinicRegistrationForm,
     LoadingTextAnimation,
     HorizontalRule,
     ParticlesBackground,

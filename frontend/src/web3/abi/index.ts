@@ -1,4 +1,4 @@
-import { TransactionManager } from "./TransactionManager";
-import { TransactionManagerABI } from "./TransactionManagerABI";
+import { TransactionContract } from "./TransactionContract";
+import { TransactionABI } from "./TransactionABI";
 
-export { TransactionManager, TransactionManagerABI };
+export { TransactionContract, TransactionABI };
