@@ -22,7 +22,12 @@ import {
     StoredTransaction,
 } from "../../types";
 import { formatName, generateId } from "../../utils/functions";
-import { Modal, PatientForm, Spinner } from "../../components";
+import {
+    Modal,
+    PatientForm,
+    PatientRecordForm,
+    Spinner,
+} from "../../components";
 
 const Patient: React.FC<{}> = () => {
     const navigate = useNavigate();
@@ -39,6 +44,13 @@ const Patient: React.FC<{}> = () => {
     const [isTransactionSuccessful, setIsTransactionSuccessful] =
         useState<boolean>(false);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [showRecordModal, setShowRecordModal] = useState<boolean>(false);
+
+    const formattedName = formatName(
+        `${patient?.firstName}`,
+        `${patient?.middleName}`,
+        `${patient?.lastName}`
+    );
 
     const retrievePatient = async () => {
         try {
@@ -65,6 +77,10 @@ const Patient: React.FC<{}> = () => {
 
     const handleDeleteModal = () => {
         setShowDeleteModal(false);
+    };
+
+    const handleRecordModal = () => {
+        setShowRecordModal(false);
     };
 
     const deletePatient = async () => {
@@ -183,8 +199,20 @@ const Patient: React.FC<{}> = () => {
                 </Modal>
             )}
 
+            {showRecordModal && (
+                <Modal onClose={handleRecordModal} key={2}>
+                    <PatientRecordForm
+                        closeModal={() => {
+                            handleRecordModal();
+                        }}
+                        patientName={formattedName}
+                        patientId={`${patient?.id}`}
+                    />
+                </Modal>
+            )}
+
             {showDeleteModal && (
-                <Modal onClose={handleDeleteModal} key={1}>
+                <Modal onClose={handleDeleteModal} key={3}>
                     <div className="py-8 px-12">
                         <p className="text-ths-black font-bold text-center lg:text-lg">
                             Are you sure you want to delete this patient?
@@ -214,13 +242,7 @@ const Patient: React.FC<{}> = () => {
                     <div className="italic text-ths-pink-300 mb-2">
                         Patient:
                     </div>
-                    <h1 className="main-page-heading mb-2">
-                        {formatName(
-                            `${patient?.firstName}`,
-                            `${patient?.middleName}`,
-                            `${patient?.lastName}`
-                        )}
-                    </h1>
+                    <h1 className="main-page-heading mb-2">{formattedName}</h1>
                 </div>
                 <div className="flex flex-col gap-2 md:flex-row md:gap-4 md:items-start">
                     <button
@@ -241,12 +263,19 @@ const Patient: React.FC<{}> = () => {
                         <DeleteIcon className="!h-5" />
                         <span> Delete patient</span>
                     </button>
-                    <button className="btn whitespace-nowrap flex gap-2 items-center">
+                    <button
+                        className="btn whitespace-nowrap flex gap-2 items-center"
+                        onClick={() => {
+                            setShowRecordModal(true);
+                        }}
+                    >
                         <NoteAddIcon className="!h-5" />
                         <span>Add record</span>
                     </button>
                 </div>
             </div>
+
+            {/* records */}
         </div>
     );
 };

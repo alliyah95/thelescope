@@ -1,8 +1,8 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Auth, Home, Root } from "./pages/main";
-import { Patient, Patients, Transactions } from "./pages/clinic";
-import { ClinicInfo } from "./pages/admin";
+import { Patient, Patients } from "./pages/clinic";
+import { ClinicInfo, Transactions } from "./pages/admin";
 import { ProtectedRoute, AdminRoute } from "./routes";
 
 const router = createBrowserRouter([
