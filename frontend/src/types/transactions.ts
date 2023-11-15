@@ -7,8 +7,8 @@ export enum TransactionOperation {
 }
 
 export enum InvolvedData {
-    Patient = "Patient",
-    PatientRecord = "PatientRecord",
+    Patient = "patient",
+    PatientRecord = "patient record",
 }
 
 export interface Transaction {

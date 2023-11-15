@@ -19,6 +19,7 @@ import {
     createTransaction,
     saveTransaction,
     createPatientDoc,
+    generateTransactionDescription,
 } from "../../utils/clinic";
 import { Spinner } from "..";
 import { Timestamp } from "firebase/firestore";
@@ -51,12 +52,17 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
         setIsTransacting(true);
         const transactionToast = toast.loading("Adding new patient...");
         const customPatientId = generateId();
+        const transactionDescription = generateTransactionDescription(
+            TransactionOperation.Create,
+            InvolvedData.Patient,
+            `${customPatientId}`
+        );
 
         const transactionData = {
             customId: generateId(),
             operation: TransactionOperation.Create,
             performedBy: userInfo.name,
-            description: "Lorem ipsum",
+            description: transactionDescription,
             involvedData: InvolvedData.Patient,
             involvedDataId: customPatientId,
         } as Transaction;
@@ -233,8 +239,8 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                             className="form-input form-input--light"
                             {...register("gender")}
                         >
-                            <option value="female">Female</option>
                             <option value="male">Male</option>
+                            <option value="female">Female</option>
                             <option value="other">Other</option>
                         </select>
                     </div>

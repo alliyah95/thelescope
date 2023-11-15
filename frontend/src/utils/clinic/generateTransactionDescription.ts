@@ -1,6 +1,10 @@
 import { TransactionOperation, InvolvedData } from "../../types";
 
 export const generateTransactionDescription = (
-    transactionType: TransactionOperation,
-    involvedData: InvolvedData
-) => {};
+    operation: TransactionOperation,
+    involvedData: InvolvedData,
+    involvedDataId: string
+): string => {
+    const description = `${operation}d ${involvedData} with ID ${involvedDataId}.`;
+    return description;
+};
