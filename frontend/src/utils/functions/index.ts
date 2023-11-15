@@ -1,3 +1,4 @@
+import { formatName } from "./formatName";
 import { generateId } from "./generateId";
 
-export { generateId };
+export { formatName, generateId };

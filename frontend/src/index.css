@@ -50,7 +50,7 @@
         @apply text-ths-black;
     }
     .main-page-wrapper {
-        @apply mx-auto w-[95%] md:w-[98%] lg:px-8 py-4 lg:py-8;
+        @apply mx-auto w-[95%] md:w-[98%] lg:px-8 py-4 lg:py-8 mb-4 md:mb-8;
     }
     .main-page-heading {
         @apply text-xl lg:text-2xl xl:text-3xl;

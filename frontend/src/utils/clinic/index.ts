@@ -6,6 +6,7 @@ import { createTransaction } from "./createTransaction";
 import { createUser } from "./createUser";
 import { deleteUserInfo } from "./deleteUserInfo";
 import { generateTransactionDescription } from "./generateTransactionDescription";
+import { getPatients } from "./getPatients";
 import { saveTransaction } from "./saveTransaction";
 import { storeUserInfo } from "./storeUserInfo";
 
@@ -18,6 +19,7 @@ export {
     createUser,
     deleteUserInfo,
     generateTransactionDescription,
+    getPatients,
     saveTransaction,
     storeUserInfo,
 };

@@ -41,3 +41,7 @@ export interface PatientFormData {
 export interface PatientDocument extends PatientFormData {
     customId: string;
 }
+
+export interface RetrievedPatientDocument extends PatientDocument {
+    id: string;
+}
