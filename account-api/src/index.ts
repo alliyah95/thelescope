@@ -5,21 +5,21 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { addDoc, collection, doc } from "firebase/firestore";
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 import { ClinicMember, Collections } from "./utils/types";
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Server is up");
 });
 
 app.post("/register", async (req: Request, res: Response) => {
-    console.log(req.body);
     const reqBody: ClinicMember = req.body;
     const {
-        userId,
         name,
         email,
         isAdmin,
@@ -30,12 +30,15 @@ app.post("/register", async (req: Request, res: Response) => {
     } = reqBody;
 
     try {
-        await createUserWithEmailAndPassword(auth, email, password);
-
+        const user = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
         const clinicRef = doc(db, Collections.Clinic, `${clinicId}`);
         const membersRef = collection(clinicRef, Collections.ClinicMembers);
         const newMemberData = {
-            userId,
+            userId: user.user?.uid,
             name,
             email,
             isAdmin,
@@ -46,6 +49,7 @@ app.post("/register", async (req: Request, res: Response) => {
         await addDoc(membersRef, newMemberData);
         res.status(201).json({ message: "Account created successfully" });
     } catch (err: any) {
+        console.log(err);
         res.status(500).json({ error: "Internal server error" });
     }
 });

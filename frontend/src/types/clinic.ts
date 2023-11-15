@@ -45,3 +45,10 @@ export interface PatientDocument extends PatientFormData {
 export interface RetrievedPatientDocument extends PatientDocument {
     id: string;
 }
+
+export interface ClinicMemberRegistrationData {
+    name: string;
+    email: string;
+    password: string;
+    isAdmin: string;
+}

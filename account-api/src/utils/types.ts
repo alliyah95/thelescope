@@ -5,6 +5,7 @@ export enum Collections {
     Transactions = "transactions",
     Patients = "patients",
 }
+
 export type Permissions = "CREATE" | "READ" | "UPDATE" | "DELETE";
 
 export interface ThelescopeUser {
