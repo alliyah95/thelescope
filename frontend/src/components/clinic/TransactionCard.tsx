@@ -12,10 +12,10 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
 }) => {
     const operationClasses =
         transactionInfo.operation === "Create"
-            ? "text-green-600"
+            ? "text-ths-blue-300"
             : transactionInfo.operation === "Delete"
-            ? "text-red-500"
-            : "text-blue-500";
+            ? "text-ths-pink-300"
+            : "text-ths-purple-300";
     const { seconds, nanoseconds } = transactionInfo.timestamp;
     const formattedTimestamp = new Date(seconds * 1000 + nanoseconds / 1000000);
 
