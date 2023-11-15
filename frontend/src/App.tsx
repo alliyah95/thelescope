@@ -41,9 +41,9 @@ const router = createBrowserRouter([
             {
                 path: "/transactions",
                 element: (
-                    <ProtectedRoute>
+                    <AdminRoute>
                         <Transactions />
-                    </ProtectedRoute>
+                    </AdminRoute>
                 ),
             },
             {

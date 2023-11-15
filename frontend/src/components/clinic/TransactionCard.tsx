@@ -1,5 +1,5 @@
 import React from "react";
-import { StoredTransaction, TransactionOperation } from "../../types";
+import { StoredTransaction } from "../../types";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import DescriptionIcon from "@mui/icons-material/Description";
 
@@ -44,22 +44,12 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
             <div className="flex gap-8 text-center mt-8">
                 <a
                     className="btn"
-                    href={`https://sepolia.etherscan.io/address/${transactionInfo.transactionHash}`}
+                    href={`https://sepolia.etherscan.io/tx/${transactionInfo.transactionHash}`}
                     target="_blank"
                 >
                     <div className="flex gap-2 items-center justify-center">
                         <AccountBalanceWalletIcon className="!h-5" />
                         <span>View on Etherscan</span>
-                    </div>
-                </a>
-                <a
-                    className="btn"
-                    href={`https://sepolia.etherscan.io/tx/${transactionInfo.transactionHash}`}
-                    target="_blank"
-                >
-                    <div className="flex gap-2 items-center justify-center">
-                        <DescriptionIcon className="!h-5" />
-                        <span>View involved record</span>
                     </div>
                 </a>
             </div>

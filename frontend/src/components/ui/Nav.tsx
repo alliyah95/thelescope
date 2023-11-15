@@ -17,6 +17,7 @@ const Nav: React.FC<{}> = () => {
     const { signOutUser } = useAuthContext() as AuthContextType;
     const [openNav, setOpenNav] = useState(false);
     const navigate = useNavigate();
+    const isAdmin = JSON.parse(`${localStorage.getItem("isAdmin")}`);
 
     useEffect(() => {
         window.addEventListener(
@@ -66,28 +67,33 @@ const Nav: React.FC<{}> = () => {
                     Patients
                 </NavLink>
             </Typography>
-            <Typography as="li" className="p-1 font-normal">
-                <NavLink
-                    to="/transactions"
-                    className={({ isActive }) =>
-                        isActive ? "active-nav-link" : ""
-                    }
-                    onClick={navbarCollapseHandler}
-                >
-                    Transactions
-                </NavLink>
-            </Typography>
-            <Typography as="li" className="p-1 font-normal">
-                <NavLink
-                    to="/clinic-info"
-                    className={({ isActive }) =>
-                        isActive ? "active-nav-link" : ""
-                    }
-                    onClick={navbarCollapseHandler}
-                >
-                    Clinic Info
-                </NavLink>
-            </Typography>
+            {isAdmin && (
+                <Typography as="li" className="p-1 font-normal">
+                    <NavLink
+                        to="/transactions"
+                        className={({ isActive }) =>
+                            isActive ? "active-nav-link" : ""
+                        }
+                        onClick={navbarCollapseHandler}
+                    >
+                        Transactions
+                    </NavLink>
+                </Typography>
+            )}
+
+            {isAdmin && (
+                <Typography as="li" className="p-1 font-normal">
+                    <NavLink
+                        to="/clinic-info"
+                        className={({ isActive }) =>
+                            isActive ? "active-nav-link" : ""
+                        }
+                        onClick={navbarCollapseHandler}
+                    >
+                        Clinic Info
+                    </NavLink>
+                </Typography>
+            )}
 
             <li>
                 <button
