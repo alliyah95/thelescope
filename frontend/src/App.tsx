@@ -1,7 +1,8 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Auth, Home, Root, ContractDeploymentPage } from "./pages";
-import { AdminRoute, ProtectedRoute } from "./routes";
+import { Auth, Home, Root } from "./pages/main";
+import { Patient, Patients, Transactions } from "./pages/clinic";
+import { ProtectedRoute } from "./routes";
 
 const router = createBrowserRouter([
     {
@@ -21,12 +22,26 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "deploy-contract",
+                path: "/patients",
                 element: (
                     <ProtectedRoute>
-                        <AdminRoute>
-                            <ContractDeploymentPage />
-                        </AdminRoute>
+                        <Patients />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "/patients/:customId",
+                element: (
+                    <ProtectedRoute>
+                        <Patient />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "/transactions",
+                element: (
+                    <ProtectedRoute>
+                        <Transactions />
                     </ProtectedRoute>
                 ),
             },

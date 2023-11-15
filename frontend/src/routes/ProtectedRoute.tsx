@@ -4,11 +4,14 @@ import { useAuthContext } from "../context";
 import { AuthContextType, WrapperElement } from "../types";
 
 const ProtectedRoute: React.FC<WrapperElement> = ({ children }) => {
-    const { user, isLoading } = useAuthContext() as AuthContextType;
+    // const { userInfo, isUserInfoLoading } = useAuthContext() as AuthContextType;
+    const userId = localStorage.getItem("userId");
 
-    if (!user && isLoading) {
+    if (!userId) {
         return <Navigate to="/" replace />;
     }
+    // if (!userInfo && !isUserInfoLoading) {
+    // }
 
     return children;
 };

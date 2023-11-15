@@ -3,7 +3,7 @@ const solc = require("solc");
 const fs = require("fs-extra");
 
 // contract name
-const CONTRACT = "TransactionManager";
+const CONTRACT = "Transaction";
 
 // get the directory of the build folder
 const buildPath = path.resolve(__dirname, "build");
@@ -11,19 +11,15 @@ const buildPath = path.resolve(__dirname, "build");
 // delete the build folder
 fs.removeSync(buildPath);
 
-// get the directory of the TransactionManager contract
-const transactionManagerPath = path.resolve(
-    __dirname,
-    "contracts",
-    `${CONTRACT}.sol`
-);
-const source = fs.readFileSync(transactionManagerPath, "utf8");
+// get the directory of the Transaction contract
+const transactionPath = path.resolve(__dirname, "contracts", `${CONTRACT}.sol`);
+const source = fs.readFileSync(transactionPath, "utf8");
 
 // compile the contract
 const input = {
     language: "Solidity",
     sources: {
-        "TransactionManager.sol": {
+        "Transaction.sol": {
             content: source,
         },
     },
@@ -36,7 +32,7 @@ const input = {
     },
 };
 const output = JSON.parse(solc.compile(JSON.stringify(input))).contracts[
-    "TransactionManager.sol"
+    "Transaction.sol"
 ];
 
 // recreate the build folder

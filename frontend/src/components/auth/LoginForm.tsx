@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useAuthContext } from "../../context";
+import { toast } from "react-toastify";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthContext } from "../../context";
 import { AuthForm, AuthForms, LoginFormData } from "../../types";
 import { loginSchema } from "../../utils/schemas";
 import { AuthContextType } from "../../types";
@@ -24,12 +25,23 @@ const LoginForm: React.FC<AuthForm> = ({ onSwitch }) => {
     };
 
     const handleLogin = async (data: LoginFormData): Promise<void> => {
+        const loginToast = toast.loading("Signing you in...");
         try {
             await signInUser(data.email, data.password);
+            toast.update(loginToast, {
+                type: toast.TYPE.SUCCESS,
+                render: "Welcome back!",
+                autoClose: 4000,
+                isLoading: false,
+            });
             navigate("/home");
-            console.log("logged in!");
         } catch (err: any) {
-            console.log(err.message);
+            toast.update(loginToast, {
+                type: toast.TYPE.ERROR,
+                render: "Incorrect email or password",
+                autoClose: 4000,
+                isLoading: false,
+            });
         }
     };
 

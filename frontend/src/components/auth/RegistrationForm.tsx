@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 import {
     AuthForm,
     AuthForms,
@@ -19,8 +20,7 @@ import {
 
 const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     const [error, setError] = useState<string>("");
-    const { registerUser, setCurrentClinic } =
-        useAuthContext() as AuthContextType;
+    const { registerUser } = useAuthContext() as AuthContextType;
     const navigate = useNavigate();
 
     const {
@@ -38,6 +38,7 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
     const handleRegistration = async (
         data: RegistrationFormData
     ): Promise<void> => {
+        const registrationToast = toast.loading("Signing you up...");
         setError("");
         console.log(data);
 
@@ -52,7 +53,6 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
             const { clinicId, name: clinicName } = await createClinic({
                 name: data.clinicName,
             });
-            setCurrentClinic(clinicId);
 
             const userId = registeredUser.user?.uid;
             const userData: ClinicMember = {
@@ -67,10 +67,21 @@ const RegistrationForm: React.FC<AuthForm> = ({ onSwitch }) => {
 
             await createUser(userData, clinicId);
             await addToThelescopeUsers(userData);
+            toast.update(registrationToast, {
+                type: toast.TYPE.SUCCESS,
+                render: "Welcome to Thelescope",
+                autoClose: 4000,
+                isLoading: false,
+            });
             navigate("/home");
         } catch (error: any) {
+            toast.update(registrationToast, {
+                type: toast.TYPE.ERROR,
+                render: "An error has occured",
+                autoClose: 4000,
+                isLoading: false,
+            });
             setError(error.message);
-            console.log(error.message);
         }
     };
 

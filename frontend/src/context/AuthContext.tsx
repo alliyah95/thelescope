@@ -11,9 +11,9 @@ import {
     signOut,
 } from "firebase/auth";
 import { auth, db } from "../config/firebase";
-import { collection } from "firebase/firestore";
+import { collection, doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { useCollectionData, useDocument } from "react-firebase-hooks/firestore";
 import { storeUserInfo } from "../utils/clinic";
 
 const initialUserInfo = {
@@ -24,20 +24,19 @@ const initialUserInfo = {
     isAdmin: false,
     clinicName: "",
 };
+
 const AuthContext = createContext<AuthContextType>({
     registerUser: () => {},
     signInUser: () => {},
     signOutUser: () => {},
-    setCurrentClinic: () => {},
     user: null,
     isLoading: true,
     isUserAdmin: false,
-    currentClinic: "",
     userInfo: initialUserInfo,
+    isUserInfoLoading: true,
 });
 
 const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
-    const [currentClinic, setCurrentClinic] = useState<string>("");
     const [isUserAdmin, setIsUserAdmin] = useState<boolean>(() => {
         const isAdmin = localStorage.getItem("isAdmin");
         return JSON.parse(isAdmin as string);
@@ -50,23 +49,27 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
     const thelescopeUsersQery = collection(db, Collections.ThelescopeUsers);
     const [thsUsersDocs, loadingThsUsersDocs, errorThsUsersDocs] =
         useCollectionData(thelescopeUsersQery);
+    const [isUserInfoLoading, setIsUerInfoLoading] = useState<boolean>(true);
 
     useEffect(() => {
         setIsLoading(loadingAuth && loadingThsUsersDocs);
     }, [loadingAuth]);
 
     useEffect(() => {
+        setIsUerInfoLoading(true);
         if (user) {
             thsUsersDocs?.forEach((thsUser) => {
                 if (thsUser.userId === user.uid) {
                     const parsedInfo = thsUser as ClinicMember;
                     setUserInfo(parsedInfo);
-                    storeUserInfo(parsedInfo); // remove
+                    storeUserInfo(parsedInfo);
+                    setIsUerInfoLoading(false);
                     return;
                 }
             });
         }
-    }, [user, thsUsersDocs]);
+        setIsUerInfoLoading(false);
+    }, [user, thsUsersDocs, setIsUerInfoLoading]);
 
     const registerUser = (email: string, password: string) => {
         return createUserWithEmailAndPassword(auth, email, password);
@@ -85,12 +88,11 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
         registerUser,
         signInUser,
         signOutUser,
-        setCurrentClinic,
         user,
         isLoading,
         isUserAdmin,
-        currentClinic,
         userInfo,
+        isUserInfoLoading,
     };
 
     return (
