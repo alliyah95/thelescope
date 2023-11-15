@@ -19,7 +19,7 @@ const LoadingTextAnimation: React.FC<{}> = () => {
         return () => clearInterval(intervalId);
     }, []);
 
-    return <p>{loadingText}</p>;
+    return <span>{loadingText}</span>;
 };
 
 export default LoadingTextAnimation;

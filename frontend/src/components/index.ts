@@ -10,6 +10,7 @@ import LoadingTextAnimation from "./extras/LoadingTextAnimation";
 import ParticlesBackground from "./extras/ParticlesBackground";
 import Spinner from "./extras/Spinner";
 
+import Dashboard from "./ui/Dashboard";
 import Modal from "./ui/Modal";
 import Nav from "./ui/Nav";
 
@@ -23,6 +24,7 @@ export {
     ParticlesBackground,
     Spinner,
     Banner,
+    Dashboard,
     Modal,
     Nav,
 };
