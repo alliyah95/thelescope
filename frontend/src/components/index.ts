@@ -3,6 +3,8 @@ import RegistrationForm from "./auth/RegistrationForm";
 
 import PatientForm from "./clinic/PatientForm";
 import PatientsList from "./clinic/PatientsList";
+import MemberCard from "./clinic/MemberCard";
+import NewMemberForm from "./clinic/NewMemberForm";
 
 import Banner from "./extras/Banner";
 import HorizontalRule from "./extras/HorizontalRule";
@@ -19,6 +21,8 @@ export {
     RegistrationForm,
     PatientForm,
     PatientsList,
+    MemberCard,
+    NewMemberForm,
     LoadingTextAnimation,
     HorizontalRule,
     ParticlesBackground,

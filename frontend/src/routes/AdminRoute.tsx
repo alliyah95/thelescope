@@ -1,22 +1,12 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuthContext } from "../context";
-import { AuthContextType, WrapperElement } from "../types";
+import { WrapperElement } from "../types";
 
 const AdminRoute: React.FC<WrapperElement> = ({ children }) => {
-    console.log("admin");
     const userId = localStorage.getItem("userId");
-    const isAdmin = localStorage.getItem("isAdmin");
+    const isAdmin = JSON.parse(`${localStorage.getItem("isAdmin")}`);
 
-    // const { userInfo, isUserInfoLoading, isUserAdmin } =
-    //     useAuthContext() as AuthContextType;
-
-    // if ((!userInfo && !isUserInfoLoading) || !isUserAdmin) {
-    //     return <Navigate to="/" replace />;
-    // }
-
-    if (!userId || !isAdmin) {
-        console.log("hello");
+    if (!userId || !isAdmin || (userId.length > 0 && !isAdmin)) {
         return <Navigate to="/" replace />;
     }
     return children;

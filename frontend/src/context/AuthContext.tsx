@@ -41,7 +41,7 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
         const isAdmin = localStorage.getItem("isAdmin");
         return JSON.parse(isAdmin as string);
     });
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     ("");
     const [user, loadingAuth, errorAuth] = useAuthState(auth);
     const [userInfo, setUserInfo] = useState<ClinicMember>(initialUserInfo);

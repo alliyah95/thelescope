@@ -11,6 +11,8 @@ import {
 } from "@heroicons/react/24/solid";
 
 const Dashboard: React.FC<{}> = () => {
+    const isAdmin = JSON.parse(`${localStorage.getItem("isAdmin")}`);
+
     return (
         <div>
             <h2 className="mb-4">What would you like to do?</h2>
@@ -20,16 +22,25 @@ const Dashboard: React.FC<{}> = () => {
                     heading="View Patients"
                     icon={<UserGroupIcon className="!h-[56px]" />}
                 />
-                <DashboardCard
-                    linkTo="/transactions"
-                    heading="Monitor Transactions"
-                    icon={<ClipboardDocumentIcon className="!h-[56px]" />}
-                />
-                <DashboardCard
-                    linkTo="/clinic-info"
-                    heading="See Clinic Information"
-                    icon={<InformationCircleIcon className="!h-[56px]" />}
-                />
+                {isAdmin && (
+                    <>
+                        <DashboardCard
+                            linkTo="/transactions"
+                            heading="Monitor Transactions"
+                            icon={
+                                <ClipboardDocumentIcon className="!h-[56px]" />
+                            }
+                        />
+                        <DashboardCard
+                            linkTo="/clinic-info"
+                            heading="See Clinic Information"
+                            icon={
+                                <InformationCircleIcon className="!h-[56px]" />
+                            }
+                        />
+                    </>
+                )}
+
                 <DashboardCard
                     linkTo="#"
                     heading="Lorem Ipsum"
