@@ -79,7 +79,7 @@ const Nav: React.FC<{}> = () => {
             </Typography>
             <Typography as="li" className="p-1 font-normal">
                 <NavLink
-                    to="/transactions"
+                    to="/clinic-info"
                     className={({ isActive }) =>
                         isActive ? "active-nav-link" : ""
                     }

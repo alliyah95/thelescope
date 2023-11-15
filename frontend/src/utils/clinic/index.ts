@@ -7,6 +7,7 @@ import { createUser } from "./createUser";
 import { deletePatientDoc } from "./deletePatientDoc";
 import { deleteUserInfo } from "./deleteUserInfo";
 import { generateTransactionDescription } from "./generateTransactionDescription";
+import { getAllTransactions } from "./getAllTransactions";
 import { getPatient } from "./getPatient";
 import { getPatients } from "./getPatients";
 import { saveTransaction } from "./saveTransaction";
@@ -22,6 +23,7 @@ export {
     deletePatientDoc,
     deleteUserInfo,
     generateTransactionDescription,
+    getAllTransactions,
     getPatient,
     getPatients,
     saveTransaction,

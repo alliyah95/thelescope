@@ -22,7 +22,7 @@ import {
     StoredTransaction,
 } from "../../types";
 import { formatName, generateId } from "../../utils/functions";
-import { Modal, PatientForm } from "../../components";
+import { Modal, PatientForm, Spinner } from "../../components";
 
 const Patient: React.FC<{}> = () => {
     const navigate = useNavigate();
@@ -78,7 +78,7 @@ const Patient: React.FC<{}> = () => {
 
         const transactionData = {
             customId: generateId(),
-            operation: TransactionOperation.Create,
+            operation: TransactionOperation.Delete,
             performedBy: userInfo.name,
             description: transactionDescription,
             involvedData: InvolvedData.Patient,
@@ -199,7 +199,9 @@ const Patient: React.FC<{}> = () => {
                                 Cancel
                             </button>
                             <button className="btn" onClick={deletePatient}>
-                                Yes
+                                {isTransacting && <Spinner />}
+                                {"   "}
+                                {isTransacting ? "Deleting" : "Yes"}
                             </button>
                         </div>
                     </div>

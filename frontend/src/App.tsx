@@ -1,7 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Auth, Home, Root } from "./pages/main";
-import { Patient, Patients } from "./pages/clinic";
+import { Patient, Patients, Transactions } from "./pages/clinic";
 import { ProtectedRoute } from "./routes";
 
 const router = createBrowserRouter([
@@ -34,6 +34,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <Patient />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "/transactions",
+                element: (
+                    <ProtectedRoute>
+                        <Transactions />
                     </ProtectedRoute>
                 ),
             },
