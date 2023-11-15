@@ -47,6 +47,10 @@ app.post("/register", async (req: Request, res: Response) => {
             permissions,
         };
         await addDoc(membersRef, newMemberData);
+
+        const usersRef = collection(db, Collections.ThelescopeUsers);
+        await addDoc(usersRef, newMemberData);
+
         res.status(201).json({ message: "Account created successfully" });
     } catch (err: any) {
         console.log(err);

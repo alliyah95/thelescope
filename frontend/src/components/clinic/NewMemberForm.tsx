@@ -12,9 +12,14 @@ import {
 import { clinicMemberSchema } from "../../utils/schemas";
 import { Spinner } from "..";
 
-export interface NewMemberFormProps extends ModalElement {}
+export interface NewMemberFormProps extends ModalElement {
+    refreshMembers: Function;
+}
 
-const NewMemberForm: React.FC<NewMemberFormProps> = ({ closeModal }) => {
+const NewMemberForm: React.FC<NewMemberFormProps> = ({
+    closeModal,
+    refreshMembers,
+}) => {
     const { userInfo } = useAuthContext() as AuthContextType;
     const [isAdding, setIsAdding] = useState<boolean>(false);
 
@@ -63,6 +68,7 @@ const NewMemberForm: React.FC<NewMemberFormProps> = ({ closeModal }) => {
                     autoClose: 5000,
                     isLoading: false,
                 });
+                refreshMembers();
             }
             closeModal();
         } catch (err) {

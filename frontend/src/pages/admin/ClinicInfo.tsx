@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuthContext } from "../../context";
-import { AuthContextType } from "../../types";
+import { AuthContextType, ClinicMember } from "../../types";
 import {
     LoadingTextAnimation,
     MemberCard,
@@ -9,11 +9,29 @@ import {
     NewMemberForm,
 } from "../../components";
 import { UserPlusIcon } from "@heroicons/react/24/solid";
+import { getAllMembers } from "../../utils/clinic";
 
 const ClinicInfo: React.FC<{}> = () => {
     const { userInfo } = useAuthContext() as AuthContextType;
     const [isMemberModalOpen, setIsMemberModalOpen] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [members, setMembers] = useState<ClinicMember[]>([]);
+    const [isError, setIsError] = useState<boolean>(false);
 
+    const retrieveMembers = async () => {
+        try {
+            setIsLoading(true);
+            const clinicMembers = await getAllMembers(`${userInfo.clinicId}`);
+            setMembers(clinicMembers);
+        } catch (err) {
+            setIsError(true);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    useEffect(() => {
+        retrieveMembers();
+    }, [userInfo.clinicId, getAllMembers]);
     const handleModalClose = () => {
         setIsMemberModalOpen(false);
     };
@@ -22,7 +40,12 @@ const ClinicInfo: React.FC<{}> = () => {
         <div className="main-page-wrapper rounded-lg lg:bg-white/10 min-h-[90vh]">
             {isMemberModalOpen && (
                 <Modal onClose={handleModalClose}>
-                    <NewMemberForm closeModal={handleModalClose} />
+                    <NewMemberForm
+                        closeModal={handleModalClose}
+                        refreshMembers={() => {
+                            retrieveMembers();
+                        }}
+                    />
                 </Modal>
             )}
             <h1 className="main-page-heading mb-2">Clinic Information</h1>
@@ -65,11 +88,19 @@ const ClinicInfo: React.FC<{}> = () => {
                 <div className="my-4">
                     <HorizontalRule />
                 </div>
+                {isLoading && (
+                    <p className="animate-bounce text-ths-pink-300">
+                        Clinic members loading...
+                    </p>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <MemberCard
-                        name="Alliyah Joyce"
-                        email="alliyah@thelescope.com"
-                    />
+                    {members.map((member, index) => (
+                        <MemberCard
+                            name={member.name}
+                            email={member.email}
+                            key={index}
+                        />
+                    ))}
                 </div>
             </div>
         </div>
