@@ -4,6 +4,7 @@ import { createClinic } from "./createClinic";
 import { createPatientDoc } from "./createPatientDoc";
 import { createTransaction } from "./createTransaction";
 import { createUser } from "./createUser";
+import { deletePatientDoc } from "./deletePatientDoc";
 import { deleteUserInfo } from "./deleteUserInfo";
 import { generateTransactionDescription } from "./generateTransactionDescription";
 import { getPatient } from "./getPatient";
@@ -18,6 +19,7 @@ export {
     createPatientDoc,
     createTransaction,
     createUser,
+    deletePatientDoc,
     deleteUserInfo,
     generateTransactionDescription,
     getPatient,
