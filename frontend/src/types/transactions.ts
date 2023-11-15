@@ -13,11 +13,21 @@ export enum InvolvedData {
 
 export interface Transaction {
     customId: string;
+    operation: TransactionOperation;
+    performedBy: string;
     description: string;
-    timestamp: Timestamp;
     involvedData: InvolvedData;
     involvedDataId: string;
-    performedBy: string;
+}
+
+export interface StoredTransaction extends Transaction {
+    timestamp: Timestamp;
     transactionHash: string;
-    operation: TransactionOperation;
+}
+
+export type TransactionStatus = "success" | "error";
+
+export interface TransactionResult {
+    transactionHash: string;
+    status: TransactionStatus;
 }

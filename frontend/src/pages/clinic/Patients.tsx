@@ -26,7 +26,11 @@ const Patients: React.FC<{}> = () => {
             </div>
             {isPatientModalOpen && (
                 <Modal onClose={handlePatientModal}>
-                    <PatientForm />
+                    <PatientForm
+                        closeModal={() => {
+                            handlePatientModal();
+                        }}
+                    />
                 </Modal>
             )}
         </div>

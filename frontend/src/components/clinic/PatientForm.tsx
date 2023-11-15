@@ -1,113 +1,134 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { toast } from "react-toastify";
-// import { Timestamp } from "firebase/firestore";
-// import { useAuthContext } from "../../context";
+import { toast } from "react-toastify";
+import { useAuthContext } from "../../context";
 import {
     PatientFormData,
     Transaction,
     AuthContextType,
     InvolvedData,
     TransactionOperation,
+    StoredTransaction,
+    PatientDocument,
+    ModalElement,
 } from "../../types";
 import { patientSchema } from "../../utils/schemas";
-// import { getWeb3 } from "../../web3/utils";
-// import { TransactionManager } from "../../web3/abi";
-// import { generateId } from "../../utils/functions";
+import { generateId } from "../../utils/functions";
+import {
+    createTransaction,
+    saveTransaction,
+    createPatientDoc,
+} from "../../utils/clinic";
+import { Spinner } from "..";
+import { Timestamp } from "firebase/firestore";
 
-const PatientForm: React.FC<{}> = () => {
-    // const { userInfo } = useAuthContext() as AuthContextType;
-    // const [transactionHash, setTransactionHash] = useState<string>("");
-    // const [isTransacting, setIsTransacting] = useState<boolean>(false);
-    // const [isTransactionSuccessful, setIsTransactionSuccessful] =
-    //     useState<boolean>(false);
-    // const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
+    const { userInfo } = useAuthContext() as AuthContextType;
+    const [isTransacting, setIsTransacting] = useState<boolean>(false);
+    const [isTransactionSuccessful, setIsTransactionSuccessful] =
+        useState<boolean>(false);
+
+    const [buttonText, setButtonText] = useState<string>("Add patient");
     const {
         register,
         handleSubmit,
         formState: { errors },
+        reset,
     } = useForm<PatientFormData>({
         resolver: zodResolver(patientSchema),
     });
 
-    // useEffect(() => {
-    //     return () => {
-    //         if (timeoutId) {
-    //             clearTimeout(timeoutId);
-    //         }
-    //     };
-    // }, [timeoutId]);
+    useEffect(() => {
+        if (isTransacting) {
+            setButtonText("Adding patient");
+        } else {
+            setButtonText("Add patient");
+        }
+    }, [isTransacting, isTransactionSuccessful]);
 
     const handleNewPatient = async (data: PatientFormData) => {
-        // setIsTransacting(true);
-        // const transactionToast = toast.loading("Adding a new patient...");
-        // try {
-        //     const web3 = await getWeb3();
-        //     const accounts = await web3.eth.getAccounts();
-        //     const transactionManager = new web3.eth.Contract(
-        //         TransactionManager.abi,
-        //         userInfo.clinicContract
-        //     );
-        //     const txId = generateId();
-        //     const involvedData = InvolvedData.Patient;
-        //     const involvedDataId = generateId();
-        //     const operation = TransactionOperation.Create;
-        //     const performedBy = userInfo.name;
-        //     const timeStamp = Timestamp.now();
-        //     const receipt = await transactionManager.methods
-        //         .createTransaction(
-        //             txId,
-        //             involvedData,
-        //             involvedDataId,
-        //             operation,
-        //             performedBy,
-        //             "Added a new patient"
-        //         )
-        //         .send({
-        //             from: accounts[0],
-        //             gas: "10000000",
-        //         });
-        //     if (receipt.status) {
-        //         toast.update(transactionToast, {
-        //             type: toast.TYPE.SUCCESS,
-        //             render: "Transaction successful!",
-        //             autoClose: 2000,
-        //             isLoading: false,
-        //         });
-        //         console.log("Transaction hash:", receipt.transactionHash);
-        //         setTransactionHash(receipt.transactionHash);
-        //         setIsTransactionSuccessful(true);
-        //     } else {
-        //         toast.update(transactionToast, {
-        //             type: toast.TYPE.ERROR,
-        //             render: "Transaction failed",
-        //             autoClose: 5000,
-        //             isLoading: false,
-        //         });
-        //         setIsTransactionSuccessful(false);
-        //     }
-        //     setIsTransacting(false);
-        // } catch (err: any) {
-        //     console.log(err);
-        //     setIsTransacting(false);
-        //     if (err.code === -32002) {
-        //         toast.update(transactionToast, {
-        //             type: toast.TYPE.ERROR,
-        //             render: "Connect your Metamask account!",
-        //             autoClose: 5000,
-        //             isLoading: false,
-        //         });
-        //     } else {
-        //         toast.update(transactionToast, {
-        //             type: toast.TYPE.ERROR,
-        //             render: "An error has occured",
-        //             autoClose: 5000,
-        //             isLoading: false,
-        //         });
-        //     }
-        // }
-        // console.log(data);
+        setIsTransacting(true);
+        const transactionToast = toast.loading("Adding new patient...");
+        const customPatientId = generateId();
+
+        const transactionData = {
+            customId: generateId(),
+            operation: TransactionOperation.Create,
+            performedBy: userInfo.name,
+            description: "Lorem ipsum",
+            involvedData: InvolvedData.Patient,
+            involvedDataId: customPatientId,
+        } as Transaction;
+
+        try {
+            const transactionTimestamp = Timestamp.now();
+            const transactionResult = await createTransaction(transactionData);
+            if (
+                transactionResult.transactionHash &&
+                transactionResult.status == "success"
+            ) {
+                toast.update(transactionToast, {
+                    type: toast.TYPE.SUCCESS,
+                    render: "Transaction successful!",
+                    autoClose: 5000,
+                    isLoading: false,
+                });
+
+                const confirmationToast = toast.loading(
+                    "Finishing things up..."
+                );
+
+                const transactionToStore = {
+                    ...transactionData,
+                    timestamp: transactionTimestamp,
+                    transactionHash: transactionResult.transactionHash,
+                } as StoredTransaction;
+
+                // save transaction
+                await saveTransaction(
+                    `${userInfo.clinicId}`,
+                    transactionToStore
+                );
+
+                // save patient
+                const patientData = {
+                    ...data,
+                    customId: customPatientId,
+                } as PatientDocument;
+                await createPatientDoc(`${userInfo.clinicId}`, patientData);
+
+                toast.update(confirmationToast, {
+                    type: toast.TYPE.SUCCESS,
+                    render: "Patient successfully added",
+                    autoClose: 5000,
+                    isLoading: false,
+                });
+
+                setIsTransactionSuccessful(true);
+
+                // reset form and close modal
+                reset();
+                closeModal();
+            } else {
+                toast.update(transactionToast, {
+                    type: toast.TYPE.ERROR,
+                    render: "Transaction failed",
+                    autoClose: 5000,
+                    isLoading: false,
+                });
+                setIsTransactionSuccessful(false);
+            }
+            setIsTransacting(false);
+        } catch (err) {
+            setIsTransacting(false);
+            toast.update(transactionToast, {
+                type: toast.TYPE.ERROR,
+                render: "An error has occured",
+                autoClose: 5000,
+                isLoading: false,
+            });
+        }
     };
 
     return (
@@ -283,8 +304,14 @@ const PatientForm: React.FC<{}> = () => {
                 </div>
 
                 <div className="flex lg:justify-end mt-4 lg:mt-6">
-                    <button className="btn lg:w-auto lg:px-12" type="submit">
-                        Add patient
+                    <button
+                        className="btn lg:w-auto lg:px-12"
+                        type="submit"
+                        disabled={isTransacting}
+                    >
+                        {isTransacting && <Spinner />}
+                        {"  "}
+                        {buttonText}
                     </button>
                 </div>
             </form>

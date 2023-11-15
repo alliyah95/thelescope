@@ -17,5 +17,6 @@ contract Transaction {
         description = _description;
         involvedData = _involvedData;
         involvedDataId = _involvedDataId;
+        timestamp = block.timestamp;
     }
 }

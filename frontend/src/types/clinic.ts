@@ -2,6 +2,8 @@ export enum Collections {
     ClinicMembers = "members",
     Clinic = "clinics",
     ThelescopeUsers = "thelescopeUsers",
+    Transactions = "transactions",
+    Patients = "patients",
 }
 
 export type Permissions = "CREATE" | "READ" | "UPDATE" | "DELETE";

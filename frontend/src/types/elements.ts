@@ -10,3 +10,7 @@ export interface ModalProps {
     children: React.ReactNode;
     onClose: Function;
 }
+
+export interface ModalElement {
+    closeModal: Function;
+}
