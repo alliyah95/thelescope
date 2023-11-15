@@ -12,6 +12,7 @@ import {
     deletePatientDoc,
     saveTransaction,
     generateTransactionDescription,
+    getPatientRecords,
 } from "../../utils/clinic";
 import {
     AuthContextType,
@@ -20,6 +21,7 @@ import {
     InvolvedData,
     Transaction,
     StoredTransaction,
+    StoredPatientRecord,
 } from "../../types";
 import { formatName, generateId } from "../../utils/functions";
 import {
@@ -27,7 +29,10 @@ import {
     PatientForm,
     PatientRecordForm,
     Spinner,
+    HorizontalRule,
+    RecordCard,
 } from "../../components";
+import { ArrowPathIcon } from "@heroicons/react/24/solid";
 
 const Patient: React.FC<{}> = () => {
     const navigate = useNavigate();
@@ -37,6 +42,9 @@ const Patient: React.FC<{}> = () => {
     const [patient, setPatient] = useState<RetrievedPatientDocument | null>(
         null
     );
+    const [patientRecords, setPatientRecords] = useState<StoredPatientRecord[]>(
+        []
+    );
     const [isError, setIsError] = useState<boolean>(false);
     const [isPatientModalOpen, setIsPatientModalOpen] =
         useState<boolean>(false);
@@ -45,13 +53,14 @@ const Patient: React.FC<{}> = () => {
         useState<boolean>(false);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [showRecordModal, setShowRecordModal] = useState<boolean>(false);
+    const [recordsLoading, setRecordsLoading] = useState<boolean>(false);
+    const [showLoadBtn, setShowLoadBtn] = useState<boolean>(true);
 
     const formattedName = formatName(
         `${patient?.firstName}`,
         `${patient?.middleName}`,
         `${patient?.lastName}`
     );
-
     const retrievePatient = async () => {
         try {
             setIsLoading(true);
@@ -64,6 +73,24 @@ const Patient: React.FC<{}> = () => {
             setIsError(true);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const retrieveRecords = async () => {
+        setShowLoadBtn(false);
+        try {
+            setRecordsLoading(true);
+            const records = await getPatientRecords(
+                `${userInfo.clinicId}`,
+                `${patient?.id}`
+            );
+            console.log(records);
+            setPatientRecords(records);
+        } catch (err) {
+            setIsError(true);
+            setShowLoadBtn(true);
+        } finally {
+            setRecordsLoading(false);
         }
     };
 
@@ -207,6 +234,9 @@ const Patient: React.FC<{}> = () => {
                         }}
                         patientName={formattedName}
                         patientId={`${patient?.id}`}
+                        retrieveNewRecords={() => {
+                            retrieveRecords();
+                        }}
                     />
                 </Modal>
             )}
@@ -275,7 +305,42 @@ const Patient: React.FC<{}> = () => {
                 </div>
             </div>
 
-            {/* records */}
+            <div className="my-4">
+                <HorizontalRule />
+            </div>
+
+            {showLoadBtn && (
+                <div>
+                    <button
+                        className="btn flex items-center gap-2 justify-center"
+                        onClick={retrieveRecords}
+                    >
+                        {recordsLoading ? (
+                            <Spinner />
+                        ) : (
+                            <ArrowPathIcon className="h-4" />
+                        )}
+                        <span>
+                            {recordsLoading
+                                ? "Loading records"
+                                : "Load records"}
+                        </span>
+                    </button>
+                </div>
+            )}
+            {recordsLoading && (
+                <p className="animate-bounce text-ths-pink-300">
+                    Patient records loading...
+                </p>
+            )}
+
+            {!recordsLoading && (
+                <div className="grid grid-cols-1  gap-4">
+                    {patientRecords.map((record, index) => (
+                        <RecordCard key={index} info={record} />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

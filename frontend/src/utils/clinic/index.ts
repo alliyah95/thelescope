@@ -12,6 +12,7 @@ import { generateTransactionDescription } from "./generateTransactionDescription
 import { getAllTransactions } from "./getAllTransactions";
 import { getPatient } from "./getPatient";
 import { getPatients } from "./getPatients";
+import { getPatientRecords } from "./getPatientRecords";
 import { saveTransaction } from "./saveTransaction";
 import { storeUserInfo } from "./storeUserInfo";
 
@@ -30,6 +31,7 @@ export {
     getAllTransactions,
     getPatient,
     getPatients,
+    getPatientRecords,
     saveTransaction,
     storeUserInfo,
 };

@@ -27,12 +27,14 @@ import {
 export interface PatientFormProps extends ModalElement {
     patientName: string;
     patientId: string;
+    retrieveNewRecords: Function;
 }
 
 const PatientRecordForm: React.FC<PatientFormProps> = ({
     closeModal,
     patientName,
     patientId,
+    retrieveNewRecords,
 }) => {
     const { userInfo } = useAuthContext() as AuthContextType;
     const [isTransacting, setIsTransacting] = useState<boolean>(false);
@@ -118,6 +120,7 @@ const PatientRecordForm: React.FC<PatientFormProps> = ({
                     isLoading: false,
                 });
                 setIsTransactionSuccessful(true);
+                retrieveNewRecords();
                 closeModal();
             } else {
                 toast.update(transactionToast, {
