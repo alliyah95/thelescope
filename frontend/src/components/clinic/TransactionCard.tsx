@@ -54,7 +54,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
                 </a>
                 <a
                     className="btn"
-                    href={`https://sepolia.etherscan.io/address/${transactionInfo.transactionHash}`}
+                    href={`https://sepolia.etherscan.io/tx/${transactionInfo.transactionHash}`}
                     target="_blank"
                 >
                     <div className="flex gap-2 items-center justify-center">
