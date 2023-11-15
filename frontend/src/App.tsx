@@ -1,8 +1,8 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Auth, Home, Root } from "./pages/main";
-import { Patients } from "./pages/clinic";
-import { AdminRoute, ProtectedRoute } from "./routes";
+import { Patient, Patients } from "./pages/clinic";
+import { ProtectedRoute } from "./routes";
 
 const router = createBrowserRouter([
     {
@@ -26,6 +26,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <Patients />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "/patients/:customId",
+                element: (
+                    <ProtectedRoute>
+                        <Patient />
                     </ProtectedRoute>
                 ),
             },

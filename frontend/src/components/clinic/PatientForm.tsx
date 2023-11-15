@@ -12,6 +12,7 @@ import {
     StoredTransaction,
     PatientDocument,
     ModalElement,
+    RetrievedPatientDocument,
 } from "../../types";
 import { patientSchema } from "../../utils/schemas";
 import { generateId } from "../../utils/functions";
@@ -24,7 +25,16 @@ import {
 import { Spinner } from "..";
 import { Timestamp } from "firebase/firestore";
 
-const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
+export interface PatientFormProps extends ModalElement {
+    accessType: "edit" | "add" | "view";
+    patientData?: RetrievedPatientDocument | null;
+}
+
+const PatientForm: React.FC<PatientFormProps> = ({
+    closeModal,
+    accessType,
+    patientData,
+}) => {
     const { userInfo } = useAuthContext() as AuthContextType;
     const [isTransacting, setIsTransacting] = useState<boolean>(false);
     const [isTransactionSuccessful, setIsTransactionSuccessful] =
@@ -48,7 +58,7 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
         }
     }, [isTransacting, isTransactionSuccessful]);
 
-    const handleNewPatient = async (data: PatientFormData) => {
+    const addPatient = async (data: PatientFormData) => {
         setIsTransacting(true);
         const transactionToast = toast.loading("Adding new patient...");
         const customPatientId = generateId();
@@ -137,6 +147,16 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
         }
     };
 
+    const editPatient = async (data: PatientFormData) => {};
+
+    const handleNewPatient = async (data: PatientFormData) => {
+        if (accessType === "add") {
+            addPatient(data);
+        } else if (accessType === "edit") {
+            editPatient(data);
+        }
+    };
+
     return (
         <div className="text-ths-black p-2 lg:p-4">
             <h2 className="text-xl lg:text-2xl xl:text-3xl font-bold mb-2 lg:mb-4">
@@ -157,6 +177,10 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                             className="form-input form-input--light"
                             placeholder="John"
                             {...register("firstName")}
+                            readOnly={accessType === "view"}
+                            defaultValue={
+                                patientData && `${patientData.firstName}`
+                            }
                         />
                         {errors.firstName && (
                             <p className="form-error">
@@ -178,6 +202,10 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                             className="form-input form-input--light"
                             placeholder="Richards"
                             {...register("middleName")}
+                            readOnly={accessType === "view"}
+                            defaultValue={
+                                patientData && `${patientData.middleName}`
+                            }
                         />
                         {errors.middleName && (
                             <p className="form-error">
@@ -199,6 +227,10 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                             className="form-input form-input--light"
                             placeholder="Doe"
                             {...register("lastName")}
+                            readOnly={accessType === "view"}
+                            defaultValue={
+                                patientData && `${patientData.lastName}`
+                            }
                         />
                         {errors.lastName && (
                             <p className="form-error">
@@ -222,6 +254,8 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                             className="form-input form-input--light"
                             placeholder="21"
                             {...register("age", { valueAsNumber: true })}
+                            readOnly={accessType === "view"}
+                            defaultValue={patientData && `${patientData.age}`}
                         />
                         {errors.age && (
                             <p className="form-error">{errors.age.message}</p>
@@ -236,6 +270,8 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                             Gender
                         </label>
                         <select
+                            defaultValue={patientData && patientData.gender}
+                            disabled={accessType === "view"}
                             className="form-input form-input--light"
                             {...register("gender")}
                         >
@@ -255,11 +291,15 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                             Contact Number
                         </label>
                         <input
+                            readOnly={accessType === "view"}
                             id="contactNumber"
                             type="text"
                             className="form-input form-input--light"
                             placeholder="09123456789"
                             {...register("contactNumber")}
+                            defaultValue={
+                                patientData && `${patientData.contactNumber}`
+                            }
                         />
                         {errors.contactNumber && (
                             <p className="form-error">
@@ -276,11 +316,15 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                             Email Address
                         </label>
                         <input
+                            readOnly={accessType === "view"}
                             id="emailAddress"
                             type="text"
                             className="form-input form-input--light"
                             placeholder="johndoe@yahoo.com"
                             {...register("emailAddress")}
+                            defaultValue={
+                                patientData && `${patientData.emailAddress}`
+                            }
                         />
                         {errors.emailAddress && (
                             <p className="form-error">
@@ -298,11 +342,13 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                         Address
                     </label>
                     <input
+                        readOnly={accessType === "view"}
                         id="address"
                         type="text"
                         className="form-input form-input--light"
                         placeholder="123 Blockchain Street ABC"
                         {...register("address")}
+                        defaultValue={patientData && `${patientData.address}`}
                     />
                     {errors.address && (
                         <p className="form-error">{errors.address.message}</p>
@@ -310,15 +356,17 @@ const PatientForm: React.FC<ModalElement> = ({ closeModal }) => {
                 </div>
 
                 <div className="flex lg:justify-end mt-4 lg:mt-6">
-                    <button
-                        className="btn lg:w-auto lg:px-12"
-                        type="submit"
-                        disabled={isTransacting}
-                    >
-                        {isTransacting && <Spinner />}
-                        {"  "}
-                        {buttonText}
-                    </button>
+                    {accessType === "add" && (
+                        <button
+                            className="btn lg:w-auto lg:px-12"
+                            type="submit"
+                            disabled={isTransacting}
+                        >
+                            {isTransacting && <Spinner />}
+                            {"  "}
+                            {buttonText}
+                        </button>
+                    )}
                 </div>
             </form>
         </div>

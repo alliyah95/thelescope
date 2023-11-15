@@ -45,6 +45,7 @@ const Patients: React.FC<{}> = () => {
                         closeModal={() => {
                             handleCloseModal();
                         }}
+                        accessType="add"
                     />
                 </Modal>
             )}
@@ -64,7 +65,14 @@ const Patients: React.FC<{}> = () => {
                 </div>
             </div>
 
-            <PatientsList patients={patients} isLoading={isLoading} />
+            {!isError && (
+                <PatientsList patients={patients} isLoading={isLoading} />
+            )}
+            {isError && (
+                <p className="text-ths-pink-300">
+                    An error has occured. Please try again later.
+                </p>
+            )}
         </div>
     );
 };

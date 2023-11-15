@@ -1,3 +1,4 @@
+import Patient from "./Patient";
 import Patients from "./Patients";
 
-export { Patients };
+export { Patient, Patients };
