@@ -222,6 +222,10 @@ const Patient: React.FC<{}> = () => {
                         }}
                         accessType="view"
                         patientData={patient}
+                        patientId={`${patient?.id}`}
+                        refreshPatient={() => {
+                            retrievePatient();
+                        }}
                     />
                 </Modal>
             )}

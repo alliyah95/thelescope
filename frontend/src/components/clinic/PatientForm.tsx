@@ -20,27 +20,38 @@ import {
     createTransaction,
     saveTransaction,
     createPatientDoc,
+    editPatientDoc,
     generateTransactionDescription,
 } from "../../utils/clinic";
 import { Spinner } from "..";
 import { Timestamp } from "firebase/firestore";
+import { PencilSquareIcon } from "@heroicons/react/24/solid";
 
 export interface PatientFormProps extends ModalElement {
-    accessType: "edit" | "add" | "view";
+    accessType: "add" | "view";
     patientData?: RetrievedPatientDocument | null;
+    patientId: string;
+    refreshPatient: Function;
 }
 
 const PatientForm: React.FC<PatientFormProps> = ({
     closeModal,
     accessType,
     patientData,
+    patientId,
+    refreshPatient,
 }) => {
     const { userInfo } = useAuthContext() as AuthContextType;
     const [isTransacting, setIsTransacting] = useState<boolean>(false);
     const [isTransactionSuccessful, setIsTransactionSuccessful] =
         useState<boolean>(false);
-
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [isTransactingEdit, setIsTransactingEdit] = useState<boolean>(false);
     const [buttonText, setButtonText] = useState<string>("Add patient");
+    const [readOnlyFields, setReadOnlyFields] = useState<boolean>(
+        () => accessType === "view"
+    );
+
     const {
         register,
         handleSubmit,
@@ -51,6 +62,12 @@ const PatientForm: React.FC<PatientFormProps> = ({
     });
 
     useEffect(() => {
+        if (isEditing) {
+            setReadOnlyFields(false);
+        }
+    }, [isEditing]);
+
+    useEffect(() => {
         if (isTransacting) {
             setButtonText("Adding patient");
         } else {
@@ -58,19 +75,34 @@ const PatientForm: React.FC<PatientFormProps> = ({
         }
     }, [isTransacting, isTransactionSuccessful]);
 
-    const addPatient = async (data: PatientFormData) => {
-        setIsTransacting(true);
-        const transactionToast = toast.loading("Adding new patient...");
-        const customPatientId = generateId();
+    const managePatient = async (data: PatientFormData) => {
+        if (isEditing) {
+            setIsTransactingEdit(true);
+        } else {
+            setIsTransacting(true);
+        }
+
+        const transactionToast = toast.loading(
+            `${isEditing ? "Editing" : "Adding"} patient...`
+        );
+
+        const customPatientId = isEditing
+            ? patientData?.customId
+            : generateId();
+
+        const operation = isEditing
+            ? TransactionOperation.Update
+            : TransactionOperation.Create;
+
         const transactionDescription = generateTransactionDescription(
-            TransactionOperation.Create,
+            operation,
             InvolvedData.Patient,
             `${customPatientId}`
         );
 
         const transactionData = {
             customId: generateId(),
-            operation: TransactionOperation.Create,
+            operation: operation,
             performedBy: userInfo.name,
             description: transactionDescription,
             involvedData: InvolvedData.Patient,
@@ -112,17 +144,34 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     ...data,
                     customId: customPatientId,
                 } as PatientDocument;
-                await createPatientDoc(`${userInfo.clinicId}`, patientData);
+                if (isEditing) {
+                    // edit patient
+                    await editPatientDoc(
+                        `${userInfo.clinicId}`,
+                        `${patientId}`,
+                        patientData
+                    );
+                    refreshPatient();
+                } else {
+                    // add new patient
+                    await createPatientDoc(`${userInfo.clinicId}`, patientData);
+                }
 
                 toast.update(confirmationToast, {
                     type: toast.TYPE.SUCCESS,
-                    render: "Patient successfully added",
+                    render: `Patient successfully ${
+                        isEditing ? "edited" : "added"
+                    }`,
                     autoClose: 5000,
                     isLoading: false,
                 });
 
                 setIsTransactionSuccessful(true);
-
+                if (isEditing) {
+                    setIsTransactingEdit(false);
+                } else {
+                    setIsTransacting(false);
+                }
                 // reset form and close modal
                 reset();
                 closeModal();
@@ -147,22 +196,32 @@ const PatientForm: React.FC<PatientFormProps> = ({
         }
     };
 
-    const editPatient = async (data: PatientFormData) => {};
-
-    const handleNewPatient = async (data: PatientFormData) => {
-        if (accessType === "add") {
-            addPatient(data);
-        } else if (accessType === "edit") {
-            editPatient(data);
-        }
-    };
-
     return (
         <div className="text-ths-black p-2 lg:p-4">
-            <h2 className="text-xl lg:text-2xl xl:text-3xl font-bold mb-2 lg:mb-4">
-                Add a new Patient
-            </h2>
-            <form onSubmit={handleSubmit(handleNewPatient)}>
+            <div className="flex justify-between">
+                <h2 className="text-xl lg:text-2xl xl:text-3xl font-bold mb-2 lg:mb-4">
+                    {!isEditing && accessType === "add" && "Add a new patient"}
+                    {!isEditing &&
+                        accessType === "view" &&
+                        "Patient information"}
+                    {isEditing && "Edit patient information"}
+                </h2>
+                <div>
+                    {!isEditing && accessType === "view" && (
+                        <button
+                            className="btn whitespace-nowrap flex gap-2 items-center"
+                            onClick={() => {
+                                setIsEditing(true);
+                            }}
+                        >
+                            <PencilSquareIcon className="!h-5" />
+                            <span>Edit</span>
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <form onSubmit={handleSubmit(managePatient)}>
                 <div className="flex flex-col xl:flex-row gap-3 lg:gap-6">
                     <div className="flex flex-col w-full">
                         <label
@@ -177,10 +236,8 @@ const PatientForm: React.FC<PatientFormProps> = ({
                             className="form-input form-input--light"
                             placeholder="John"
                             {...register("firstName")}
-                            readOnly={accessType === "view"}
-                            defaultValue={
-                                patientData && `${patientData.firstName}`
-                            }
+                            readOnly={readOnlyFields}
+                            defaultValue={patientData?.firstName ?? ""}
                         />
                         {errors.firstName && (
                             <p className="form-error">
@@ -202,10 +259,8 @@ const PatientForm: React.FC<PatientFormProps> = ({
                             className="form-input form-input--light"
                             placeholder="Richards"
                             {...register("middleName")}
-                            readOnly={accessType === "view"}
-                            defaultValue={
-                                patientData && `${patientData.middleName}`
-                            }
+                            readOnly={readOnlyFields}
+                            defaultValue={patientData?.middleName ?? ""}
                         />
                         {errors.middleName && (
                             <p className="form-error">
@@ -227,10 +282,8 @@ const PatientForm: React.FC<PatientFormProps> = ({
                             className="form-input form-input--light"
                             placeholder="Doe"
                             {...register("lastName")}
-                            readOnly={accessType === "view"}
-                            defaultValue={
-                                patientData && `${patientData.lastName}`
-                            }
+                            readOnly={readOnlyFields}
+                            defaultValue={patientData?.lastName ?? ""}
                         />
                         {errors.lastName && (
                             <p className="form-error">
@@ -254,8 +307,8 @@ const PatientForm: React.FC<PatientFormProps> = ({
                             className="form-input form-input--light"
                             placeholder="21"
                             {...register("age", { valueAsNumber: true })}
-                            readOnly={accessType === "view"}
-                            defaultValue={patientData && `${patientData.age}`}
+                            readOnly={readOnlyFields}
+                            defaultValue={patientData?.age ?? ""}
                         />
                         {errors.age && (
                             <p className="form-error">{errors.age.message}</p>
@@ -270,8 +323,8 @@ const PatientForm: React.FC<PatientFormProps> = ({
                             Gender
                         </label>
                         <select
-                            defaultValue={patientData && patientData.gender}
-                            disabled={accessType === "view"}
+                            defaultValue={patientData?.gender ?? ""}
+                            disabled={readOnlyFields}
                             className="form-input form-input--light"
                             {...register("gender")}
                         >
@@ -291,15 +344,13 @@ const PatientForm: React.FC<PatientFormProps> = ({
                             Contact Number
                         </label>
                         <input
-                            readOnly={accessType === "view"}
+                            readOnly={readOnlyFields}
                             id="contactNumber"
                             type="text"
                             className="form-input form-input--light"
                             placeholder="09123456789"
                             {...register("contactNumber")}
-                            defaultValue={
-                                patientData && `${patientData.contactNumber}`
-                            }
+                            defaultValue={patientData?.contactNumber ?? ""}
                         />
                         {errors.contactNumber && (
                             <p className="form-error">
@@ -316,15 +367,13 @@ const PatientForm: React.FC<PatientFormProps> = ({
                             Email Address
                         </label>
                         <input
-                            readOnly={accessType === "view"}
+                            readOnly={readOnlyFields}
                             id="emailAddress"
                             type="text"
                             className="form-input form-input--light"
                             placeholder="johndoe@yahoo.com"
                             {...register("emailAddress")}
-                            defaultValue={
-                                patientData && `${patientData.emailAddress}`
-                            }
+                            defaultValue={patientData?.emailAddress ?? ""}
                         />
                         {errors.emailAddress && (
                             <p className="form-error">
@@ -342,13 +391,13 @@ const PatientForm: React.FC<PatientFormProps> = ({
                         Address
                     </label>
                     <input
-                        readOnly={accessType === "view"}
+                        readOnly={readOnlyFields}
                         id="address"
                         type="text"
                         className="form-input form-input--light"
                         placeholder="123 Blockchain Street ABC"
                         {...register("address")}
-                        defaultValue={patientData && `${patientData.address}`}
+                        defaultValue={patientData?.address ?? ""}
                     />
                     {errors.address && (
                         <p className="form-error">{errors.address.message}</p>
@@ -356,7 +405,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                 </div>
 
                 <div className="flex lg:justify-end mt-4 lg:mt-6">
-                    {accessType === "add" && (
+                    {!isEditing && accessType === "add" && (
                         <button
                             className="btn lg:w-auto lg:px-12"
                             type="submit"
@@ -365,6 +414,17 @@ const PatientForm: React.FC<PatientFormProps> = ({
                             {isTransacting && <Spinner />}
                             {"  "}
                             {buttonText}
+                        </button>
+                    )}
+                    {isEditing && accessType === "view" && (
+                        <button
+                            className="btn lg:w-auto lg:px-12"
+                            type="submit"
+                            disabled={isTransactingEdit}
+                        >
+                            {isTransactingEdit && <Spinner />}
+                            {"  "}
+                            {isTransactingEdit ? "Updating" : "Update record"}
                         </button>
                     )}
                 </div>
