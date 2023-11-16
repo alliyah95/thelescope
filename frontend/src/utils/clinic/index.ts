@@ -9,6 +9,7 @@ import { deletePatientDoc } from "./deletePatientDoc";
 import { deleteRecord } from "./deleteRecord";
 import { deleteUserInfo } from "./deleteUserInfo";
 import { editPatientDoc } from "./editPatientDoc";
+import { editRecord } from "./editRecord";
 import { getAllMembers } from "./getAllMembers";
 import { generateTransactionDescription } from "./generateTransactionDescription";
 import { getAllTransactions } from "./getAllTransactions";
@@ -30,6 +31,7 @@ export {
     deleteRecord,
     deleteUserInfo,
     editPatientDoc,
+    editRecord,
     getAllMembers,
     generateTransactionDescription,
     getAllTransactions,

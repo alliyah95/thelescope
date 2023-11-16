@@ -6,6 +6,7 @@ import {
     InvolvedData,
     AuthContextType,
     StoredTransaction,
+    RetrievedPatientRecord,
 } from "../../types";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
@@ -18,13 +19,14 @@ import { generateId } from "../../utils/functions";
 import { toast } from "react-toastify";
 import { useAuthContext } from "../../context";
 import { Timestamp } from "firebase/firestore";
-import { Spinner } from "..";
+import { Spinner, Modal, PatientRecordForm } from "..";
 
 export interface RecordCardProps {
-    info: StoredPatientRecord;
+    info: RetrievedPatientRecord;
     patientId: string;
     recordId: string;
     reload: Function;
+    patientName: string;
 }
 
 const RecordCard: React.FC<RecordCardProps> = ({
@@ -32,9 +34,11 @@ const RecordCard: React.FC<RecordCardProps> = ({
     patientId,
     recordId,
     reload,
+    patientName,
 }) => {
     const { userInfo } = useAuthContext() as AuthContextType;
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
+    const [showEditModal, setShowEditModal] = useState<boolean>(false);
 
     const { seconds, nanoseconds } = info.createdDuring;
     const { seconds: seconds2, nanoseconds: nanoseconds2 } =
@@ -120,57 +124,89 @@ const RecordCard: React.FC<RecordCardProps> = ({
         }
     };
 
-    return (
-        <div className="bg-white text-ths-black rounded-lg p-8">
-            <p>
-                <span className="font-bold">Record ID: </span>
-                <span>{info.customId}</span>
-            </p>
-            <p>
-                <span className="font-bold">Reason: </span>
-                <span>{info.reason}</span>
-            </p>
-            <p>
-                <span className="font-bold">Treatment: </span>
-                <span>{info.treatment}</span>
-            </p>
-            <p>
-                <span className="font-bold">Findings: </span>
-                <span>{info.findings}</span>
-            </p>
-            <p>
-                <span className="font-bold">Created by: </span>
-                <span>{info.createdBy}</span>
-            </p>
-            <p>
-                <span className="font-bold">Created on: </span>
-                <span>{formattedCreationTimestamp.toLocaleString()}</span>
-            </p>
-            <p>
-                <span className="font-bold">Last updated by: </span>
-                <span>{info.lastUpdatedBy}</span>
-            </p>
-            <p>
-                <span className="font-bold">Created on: </span>
-                <span>{formattedUpdateTimestamp.toLocaleString()}</span>
-            </p>
+    const handleEditModal = () => {
+        setShowEditModal(false);
+    };
 
-            <div className="flex justify-end w-full gap-4">
-                <button className="btn  flex gap-2 items-center w-auto">
-                    <PencilSquareIcon className="!h-5" />
-                    <span>Edit record</span>
-                </button>
-                <button
-                    className="btn  flex gap-2 items-center w-auto"
-                    onClick={handleDeleteRecord}
-                >
-                    {isDeleting ? <Spinner /> : <TrashIcon className="!h-5" />}
-                    <span>
-                        {isDeleting ? "Deleting record" : "Delete record"}
-                    </span>
-                </button>
+    return (
+        <>
+            {showEditModal && (
+                <Modal onClose={handleEditModal} key={2}>
+                    <PatientRecordForm
+                        closeModal={() => {
+                            handleEditModal();
+                        }}
+                        patientName={patientName}
+                        patientId={patientId}
+                        retrieveNewRecords={() => {
+                            reload();
+                        }}
+                        accessType="edit"
+                        recordData={info}
+                        recordId={recordId}
+                    />
+                </Modal>
+            )}
+            <div className="bg-white text-ths-black rounded-lg p-8">
+                <p>
+                    <span className="font-bold">Record ID: </span>
+                    <span>{info.customId}</span>
+                </p>
+                <p>
+                    <span className="font-bold">Reason: </span>
+                    <span>{info.reason}</span>
+                </p>
+                <p>
+                    <span className="font-bold">Treatment: </span>
+                    <span>{info.treatment}</span>
+                </p>
+                <p>
+                    <span className="font-bold">Findings: </span>
+                    <span>{info.findings}</span>
+                </p>
+                <p>
+                    <span className="font-bold">Created by: </span>
+                    <span>{info.createdBy}</span>
+                </p>
+                <p>
+                    <span className="font-bold">Created on: </span>
+                    <span>{formattedCreationTimestamp.toLocaleString()}</span>
+                </p>
+                <p>
+                    <span className="font-bold">Last updated by: </span>
+                    <span>{info.lastUpdatedBy}</span>
+                </p>
+                <p>
+                    <span className="font-bold">Created on: </span>
+                    <span>{formattedUpdateTimestamp.toLocaleString()}</span>
+                </p>
+
+                <div className="flex justify-end w-full gap-4">
+                    <button
+                        className="btn  flex gap-2 items-center w-auto"
+                        onClick={() => {
+                            setShowEditModal(true);
+                        }}
+                    >
+                        <PencilSquareIcon className="!h-5" />
+                        <span>Edit record</span>
+                    </button>
+                    <button
+                        className="btn  flex gap-2 items-center w-auto"
+                        onClick={handleDeleteRecord}
+                    >
+                        {isDeleting ? (
+                            <Spinner />
+                        ) : (
+                            <TrashIcon className="!h-5" />
+                        )}
+                        <span>
+                            {isDeleting ? "Deleting record" : "Delete record"}
+                        </span>
+                    </button>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

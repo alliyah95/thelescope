@@ -187,6 +187,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
             setIsTransacting(false);
         } catch (err) {
             setIsTransacting(false);
+            setIsTransactingEdit(false);
             toast.update(transactionToast, {
                 type: toast.TYPE.ERROR,
                 render: "An error has occured",

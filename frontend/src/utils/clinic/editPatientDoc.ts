@@ -14,5 +14,5 @@ export const editPatientDoc = async (
         Collections.Patients,
         patientId
     );
-    return await setDoc(patientDocRef, updatedPatient, { merge: true });
+    return setDoc(patientDocRef, updatedPatient, { merge: true });
 };

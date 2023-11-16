@@ -241,6 +241,7 @@ const Patient: React.FC<{}> = () => {
                         retrieveNewRecords={() => {
                             retrieveRecords();
                         }}
+                        accessType="add"
                     />
                 </Modal>
             )}
@@ -349,6 +350,7 @@ const Patient: React.FC<{}> = () => {
                             reload={() => {
                                 retrieveRecords();
                             }}
+                            patientName={formattedName}
                         />
                     ))}
                 </div>

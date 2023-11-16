@@ -9,6 +9,7 @@ import {
     Transaction,
     StoredTransaction,
     StoredPatientRecord,
+    RetrievedPatientRecord,
 } from "../../types";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -22,12 +23,16 @@ import {
     saveTransaction,
     createTransaction,
     createRecord,
+    editRecord,
 } from "../../utils/clinic";
 
 export interface PatientFormProps extends ModalElement {
     patientName: string;
     patientId: string;
     retrieveNewRecords: Function;
+    recordData?: RetrievedPatientRecord;
+    accessType: "add" | "edit";
+    recordId?: string;
 }
 
 const PatientRecordForm: React.FC<PatientFormProps> = ({
@@ -35,9 +40,14 @@ const PatientRecordForm: React.FC<PatientFormProps> = ({
     patientName,
     patientId,
     retrieveNewRecords,
+    recordData,
+    accessType,
+    recordId,
 }) => {
+    console.log(recordData);
     const { userInfo } = useAuthContext() as AuthContextType;
     const [isTransacting, setIsTransacting] = useState<boolean>(false);
+    const [isTransactingEdit, setIsTransactingEdit] = useState<boolean>(false);
     const [isTransactionSuccessful, setIsTransactionSuccessful] =
         useState<boolean>(false);
 
@@ -50,18 +60,32 @@ const PatientRecordForm: React.FC<PatientFormProps> = ({
     });
 
     const handleFormChanges = async (data: PatientRecordFormData) => {
-        setIsTransacting(true);
-        const transactionToast = toast.loading("Adding record...");
-        const customRecordId = generateId();
+        const isEditing = accessType === "edit";
+        if (isEditing) {
+            setIsTransactingEdit(true);
+        } else {
+            setIsTransacting(true);
+        }
+
+        const transactionToast = toast.loading(
+            `${isEditing ? "Editing" : "Adding"} record...`
+        );
+
+        const customRecordId = isEditing ? recordData?.customId : generateId();
+
+        const operation = isEditing
+            ? TransactionOperation.Update
+            : TransactionOperation.Create;
+
         const transactionDescription = generateTransactionDescription(
-            TransactionOperation.Create,
+            operation,
             InvolvedData.PatientRecord,
             `${customRecordId}`
         );
 
         const transactionData = {
             customId: generateId(),
-            operation: TransactionOperation.Create,
+            operation: operation,
             performedBy: userInfo.name,
             description: transactionDescription,
             involvedData: InvolvedData.PatientRecord,
@@ -107,19 +131,38 @@ const PatientRecordForm: React.FC<PatientFormProps> = ({
                     lastUpdatedTime: Timestamp.now(),
                     customId: customRecordId,
                 } as StoredPatientRecord;
-                await createRecord(
-                    `${userInfo.clinicId}`,
-                    patientId,
-                    recordData
-                );
+
+                if (isEditing) {
+                    // edit record
+                    await editRecord(
+                        `${userInfo.clinicId}`,
+                        patientId,
+                        `${recordId}`,
+                        recordData
+                    );
+                } else {
+                    // create record
+                    await createRecord(
+                        `${userInfo.clinicId}`,
+                        patientId,
+                        recordData
+                    );
+                }
 
                 toast.update(confirmationToast, {
                     type: toast.TYPE.SUCCESS,
-                    render: "Record successfully added",
+                    render: `Record successfully ${
+                        isEditing ? "edited" : "added"
+                    }`,
                     autoClose: 5000,
                     isLoading: false,
                 });
                 setIsTransactionSuccessful(true);
+                if (isEditing) {
+                    setIsTransactingEdit(false);
+                } else {
+                    setIsTransacting(false);
+                }
                 retrieveNewRecords();
                 closeModal();
             } else {
@@ -140,13 +183,15 @@ const PatientRecordForm: React.FC<PatientFormProps> = ({
             });
         } finally {
             setIsTransacting(false);
+            setIsTransactingEdit(false);
         }
     };
 
     return (
         <div className="text-ths-black p-2 lg:p-4">
             <h2 className="text-xl lg:text-2xl xl:text-3xl font-bold mb-2 ">
-                Add a record
+                {accessType === "add" && "Add a record"}
+                {accessType === "edit" && "Edit record"}
             </h2>
 
             <p className=" mb-2 lg:mb-4">
@@ -166,6 +211,7 @@ const PatientRecordForm: React.FC<PatientFormProps> = ({
                         type="text"
                         className="form-input form-input--light"
                         placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                        defaultValue={recordData?.reason ?? ""}
                         {...register("reason")}
                     />
                     {errors.reason && (
@@ -184,6 +230,7 @@ const PatientRecordForm: React.FC<PatientFormProps> = ({
                         type="text"
                         className="form-input form-input--light"
                         placeholder="Cras malesuada aliquam vehicula. Quisque nec massa dolor."
+                        defaultValue={recordData?.findings ?? ""}
                         {...register("findings")}
                     />
                     {errors.findings && (
@@ -202,6 +249,7 @@ const PatientRecordForm: React.FC<PatientFormProps> = ({
                         type="text"
                         className="form-input form-input--light"
                         placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                        defaultValue={recordData?.treatment ?? ""}
                         {...register("treatment")}
                     />
                     {errors.treatment && (
@@ -210,15 +258,27 @@ const PatientRecordForm: React.FC<PatientFormProps> = ({
                 </div>
 
                 <div className="flex lg:justify-end  mt-4 lg:mt-6">
-                    <button
-                        className="btn lg:w-auto lg:px-12"
-                        type="submit"
-                        disabled={isTransacting}
-                    >
-                        {isTransacting && <Spinner />}
-                        {"  "}
-                        {isTransacting ? "Adding" : "Add record"}
-                    </button>
+                    {accessType === "add" ? (
+                        <button
+                            className="btn lg:w-auto lg:px-12"
+                            type="submit"
+                            disabled={isTransacting}
+                        >
+                            {isTransacting && <Spinner />}
+                            {"  "}
+                            {isTransacting ? "Adding" : "Add record"}
+                        </button>
+                    ) : (
+                        <button
+                            className="btn lg:w-auto lg:px-12"
+                            type="submit"
+                            disabled={isTransactingEdit}
+                        >
+                            {isTransactingEdit && <Spinner />}
+                            {"  "}
+                            {isTransactingEdit ? "Editing" : "Edit record"}
+                        </button>
+                    )}
                 </div>
             </form>
         </div>
