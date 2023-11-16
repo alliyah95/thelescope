@@ -1,9 +1,12 @@
+import { Timestamp } from "firebase/firestore";
+
 export enum Collections {
     ClinicMembers = "members",
     Clinic = "clinics",
     ThelescopeUsers = "thelescopeUsers",
     Transactions = "transactions",
     Patients = "patients",
+    Records = "records",
 }
 
 export type Permissions = "CREATE" | "READ" | "UPDATE" | "DELETE";
@@ -51,4 +54,22 @@ export interface ClinicMemberRegistrationData {
     email: string;
     password: string;
     isAdmin: string;
+}
+
+export interface PatientRecordFormData {
+    reason: string;
+    findings: string;
+    treatment: string;
+}
+
+export interface StoredPatientRecord extends PatientRecordFormData {
+    createdBy: string;
+    createdDuring: Timestamp;
+    lastUpdatedBy: string;
+    lastUpdatedTime: Timestamp;
+    customId: string;
+}
+
+export interface RetrievedPatientRecord extends StoredPatientRecord {
+    id: string;
 }

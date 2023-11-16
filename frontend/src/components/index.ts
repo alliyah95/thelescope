@@ -5,6 +5,8 @@ import PatientForm from "./clinic/PatientForm";
 import PatientsList from "./clinic/PatientsList";
 import MemberCard from "./clinic/MemberCard";
 import NewMemberForm from "./clinic/NewMemberForm";
+import PatientRecordForm from "./clinic/PatientRecordForm";
+import RecordCard from "./clinic/RecordCard";
 
 import Banner from "./extras/Banner";
 import HorizontalRule from "./extras/HorizontalRule";
@@ -22,6 +24,8 @@ export {
     PatientForm,
     PatientsList,
     MemberCard,
+    PatientRecordForm,
+    RecordCard,
     NewMemberForm,
     LoadingTextAnimation,
     HorizontalRule,

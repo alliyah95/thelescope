@@ -12,6 +12,7 @@ import {
     deletePatientDoc,
     saveTransaction,
     generateTransactionDescription,
+    getPatientRecords,
 } from "../../utils/clinic";
 import {
     AuthContextType,
@@ -20,9 +21,18 @@ import {
     InvolvedData,
     Transaction,
     StoredTransaction,
+    RetrievedPatientRecord,
 } from "../../types";
 import { formatName, generateId } from "../../utils/functions";
-import { Modal, PatientForm, Spinner } from "../../components";
+import {
+    Modal,
+    PatientForm,
+    PatientRecordForm,
+    Spinner,
+    HorizontalRule,
+    RecordCard,
+} from "../../components";
+import { ArrowPathIcon } from "@heroicons/react/24/solid";
 
 const Patient: React.FC<{}> = () => {
     const navigate = useNavigate();
@@ -32,6 +42,9 @@ const Patient: React.FC<{}> = () => {
     const [patient, setPatient] = useState<RetrievedPatientDocument | null>(
         null
     );
+    const [patientRecords, setPatientRecords] = useState<
+        RetrievedPatientRecord[]
+    >([]);
     const [isError, setIsError] = useState<boolean>(false);
     const [isPatientModalOpen, setIsPatientModalOpen] =
         useState<boolean>(false);
@@ -39,7 +52,15 @@ const Patient: React.FC<{}> = () => {
     const [isTransactionSuccessful, setIsTransactionSuccessful] =
         useState<boolean>(false);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [showRecordModal, setShowRecordModal] = useState<boolean>(false);
+    const [recordsLoading, setRecordsLoading] = useState<boolean>(false);
+    const [showLoadBtn, setShowLoadBtn] = useState<boolean>(true);
 
+    const formattedName = formatName(
+        `${patient?.firstName}`,
+        `${patient?.middleName}`,
+        `${patient?.lastName}`
+    );
     const retrievePatient = async () => {
         try {
             setIsLoading(true);
@@ -55,6 +76,24 @@ const Patient: React.FC<{}> = () => {
         }
     };
 
+    const retrieveRecords = async () => {
+        setShowLoadBtn(false);
+        try {
+            setRecordsLoading(true);
+            const records = await getPatientRecords(
+                `${userInfo.clinicId}`,
+                `${patient?.id}`
+            );
+            console.log(records);
+            setPatientRecords(records);
+        } catch (err) {
+            setIsError(true);
+            setShowLoadBtn(true);
+        } finally {
+            setRecordsLoading(false);
+        }
+    };
+
     useEffect(() => {
         retrievePatient();
     }, [userInfo.clinicId]);
@@ -65,6 +104,10 @@ const Patient: React.FC<{}> = () => {
 
     const handleDeleteModal = () => {
         setShowDeleteModal(false);
+    };
+
+    const handleRecordModal = () => {
+        setShowRecordModal(false);
     };
 
     const deletePatient = async () => {
@@ -179,12 +222,32 @@ const Patient: React.FC<{}> = () => {
                         }}
                         accessType="view"
                         patientData={patient}
+                        patientId={`${patient?.id}`}
+                        refreshPatient={() => {
+                            retrievePatient();
+                        }}
+                    />
+                </Modal>
+            )}
+
+            {showRecordModal && (
+                <Modal onClose={handleRecordModal} key={2}>
+                    <PatientRecordForm
+                        closeModal={() => {
+                            handleRecordModal();
+                        }}
+                        patientName={formattedName}
+                        patientId={`${patient?.id}`}
+                        retrieveNewRecords={() => {
+                            retrieveRecords();
+                        }}
+                        accessType="add"
                     />
                 </Modal>
             )}
 
             {showDeleteModal && (
-                <Modal onClose={handleDeleteModal} key={1}>
+                <Modal onClose={handleDeleteModal} key={3}>
                     <div className="py-8 px-12">
                         <p className="text-ths-black font-bold text-center lg:text-lg">
                             Are you sure you want to delete this patient?
@@ -214,13 +277,7 @@ const Patient: React.FC<{}> = () => {
                     <div className="italic text-ths-pink-300 mb-2">
                         Patient:
                     </div>
-                    <h1 className="main-page-heading mb-2">
-                        {formatName(
-                            `${patient?.firstName}`,
-                            `${patient?.middleName}`,
-                            `${patient?.lastName}`
-                        )}
-                    </h1>
+                    <h1 className="main-page-heading mb-2">{formattedName}</h1>
                 </div>
                 <div className="flex flex-col gap-2 md:flex-row md:gap-4 md:items-start">
                     <button
@@ -241,12 +298,63 @@ const Patient: React.FC<{}> = () => {
                         <DeleteIcon className="!h-5" />
                         <span> Delete patient</span>
                     </button>
-                    <button className="btn whitespace-nowrap flex gap-2 items-center">
+                    <button
+                        className="btn whitespace-nowrap flex gap-2 items-center"
+                        onClick={() => {
+                            setShowRecordModal(true);
+                        }}
+                    >
                         <NoteAddIcon className="!h-5" />
                         <span>Add record</span>
                     </button>
                 </div>
             </div>
+
+            <div className="my-6">
+                <HorizontalRule />
+            </div>
+
+            {showLoadBtn && (
+                <div>
+                    <button
+                        className="btn flex items-center gap-2 justify-center"
+                        onClick={retrieveRecords}
+                    >
+                        {recordsLoading ? (
+                            <Spinner />
+                        ) : (
+                            <ArrowPathIcon className="h-4" />
+                        )}
+                        <span>
+                            {recordsLoading
+                                ? "Loading records"
+                                : "Load records"}
+                        </span>
+                    </button>
+                </div>
+            )}
+            {recordsLoading && (
+                <p className="animate-bounce text-ths-pink-300">
+                    Patient records loading...
+                </p>
+            )}
+
+            {!recordsLoading && (
+                <div className="grid grid-cols-1 lg:grid-cols-2  gap-6">
+                    {patientRecords.map((record, index) => (
+                        <RecordCard
+                            key={index}
+                            info={record}
+                            patientId={`${patient?.id}`}
+                            recordId={record.id}
+                            reload={() => {
+                                retrieveRecords();
+                            }}
+                            patientName={formattedName}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
