@@ -6,6 +6,7 @@ import { createRecord } from "./createRecord";
 import { createTransaction } from "./createTransaction";
 import { createUser } from "./createUser";
 import { deletePatientDoc } from "./deletePatientDoc";
+import { deleteRecord } from "./deleteRecord";
 import { deleteUserInfo } from "./deleteUserInfo";
 import { getAllMembers } from "./getAllMembers";
 import { generateTransactionDescription } from "./generateTransactionDescription";
@@ -25,6 +26,7 @@ export {
     createTransaction,
     createUser,
     deletePatientDoc,
+    deleteRecord,
     deleteUserInfo,
     getAllMembers,
     generateTransactionDescription,

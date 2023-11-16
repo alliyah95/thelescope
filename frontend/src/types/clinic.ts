@@ -69,3 +69,7 @@ export interface StoredPatientRecord extends PatientRecordFormData {
     lastUpdatedTime: Timestamp;
     customId: string;
 }
+
+export interface RetrievedPatientRecord extends StoredPatientRecord {
+    id: string;
+}

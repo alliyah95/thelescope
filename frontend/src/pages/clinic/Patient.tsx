@@ -21,7 +21,7 @@ import {
     InvolvedData,
     Transaction,
     StoredTransaction,
-    StoredPatientRecord,
+    RetrievedPatientRecord,
 } from "../../types";
 import { formatName, generateId } from "../../utils/functions";
 import {
@@ -42,9 +42,9 @@ const Patient: React.FC<{}> = () => {
     const [patient, setPatient] = useState<RetrievedPatientDocument | null>(
         null
     );
-    const [patientRecords, setPatientRecords] = useState<StoredPatientRecord[]>(
-        []
-    );
+    const [patientRecords, setPatientRecords] = useState<
+        RetrievedPatientRecord[]
+    >([]);
     const [isError, setIsError] = useState<boolean>(false);
     const [isPatientModalOpen, setIsPatientModalOpen] =
         useState<boolean>(false);
@@ -305,7 +305,7 @@ const Patient: React.FC<{}> = () => {
                 </div>
             </div>
 
-            <div className="my-4">
+            <div className="my-6">
                 <HorizontalRule />
             </div>
 
@@ -335,9 +335,17 @@ const Patient: React.FC<{}> = () => {
             )}
 
             {!recordsLoading && (
-                <div className="grid grid-cols-1  gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2  gap-6">
                     {patientRecords.map((record, index) => (
-                        <RecordCard key={index} info={record} />
+                        <RecordCard
+                            key={index}
+                            info={record}
+                            patientId={`${patient?.id}`}
+                            recordId={record.id}
+                            reload={() => {
+                                retrieveRecords();
+                            }}
+                        />
                     ))}
                 </div>
             )}
