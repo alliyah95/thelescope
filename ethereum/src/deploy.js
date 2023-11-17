@@ -6,8 +6,6 @@ const compiledContract = require("./build/Transaction.json");
 
 const metamaskSeedPhrase = process.env.METAMASK_SEED_PHRASE;
 const infuraApi = process.env.INFURA_API;
-const clinicName = process.env.CLINIC_NAME;
-const clinicId = process.env.CLINIC_ID;
 
 const provider = new HDWalletProvider(metamaskSeedPhrase, infuraApi);
 const web3 = new Web3(provider);
