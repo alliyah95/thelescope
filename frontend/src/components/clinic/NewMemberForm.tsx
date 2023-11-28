@@ -7,7 +7,6 @@ import {
     ClinicMemberRegistrationData,
     ModalElement,
     AuthContextType,
-    ClinicMember,
 } from "../../types";
 import { clinicMemberSchema } from "../../utils/schemas";
 import { Spinner } from "..";
@@ -61,7 +60,6 @@ const NewMemberForm: React.FC<NewMemberFormProps> = ({
                     isLoading: false,
                 });
             } else {
-                const data = await account.json();
                 toast.update(memberToast, {
                     type: toast.TYPE.SUCCESS,
                     render: "Member successfully added!",

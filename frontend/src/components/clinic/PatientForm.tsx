@@ -30,7 +30,7 @@ import { PencilSquareIcon } from "@heroicons/react/24/solid";
 export interface PatientFormProps extends ModalElement {
     accessType: "add" | "view";
     patientData?: RetrievedPatientDocument | null;
-    patientId: string;
+    patientId?: string;
     refreshPatient: Function;
 }
 

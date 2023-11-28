@@ -11,9 +11,9 @@ import {
     signOut,
 } from "firebase/auth";
 import { auth, db } from "../config/firebase";
-import { collection, doc } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData, useDocument } from "react-firebase-hooks/firestore";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 import { storeUserInfo } from "../utils/clinic";
 
 const initialUserInfo = {
@@ -80,7 +80,6 @@ const AuthContextProvider: React.FC<WrapperElement> = ({ children }) => {
     };
 
     const signOutUser = () => {
-        // TODO: delete user info from local storage
         return signOut(auth);
     };
 

@@ -46,6 +46,7 @@ const Patients: React.FC<{}> = () => {
                             handleCloseModal();
                         }}
                         accessType="add"
+                        refreshPatient={() => {}}
                     />
                 </Modal>
             )}

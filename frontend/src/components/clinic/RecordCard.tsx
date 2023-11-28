@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-    StoredPatientRecord,
     Transaction,
     TransactionOperation,
     InvolvedData,
